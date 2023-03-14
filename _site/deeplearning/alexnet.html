@@ -1,0 +1,802 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[Alexnet] ImageNet Classification with Deep Convolutional Neural Networks - Journey To Data Science</title>
+<meta name="description" content="Alexnet Paper Review &amp; Code Implementation">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[Alexnet] ImageNet Classification with Deep Convolutional Neural Networks">
+<meta property="og:url" content="http://localhost:4000/deeplearning/alexnet">
+
+
+  <meta property="og:description" content="Alexnet Paper Review &amp; Code Implementation">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-01T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/deeplearning/alexnet">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#deeplearning" itemprop="item"><span itemprop="name">Deeplearning</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[Alexnet] ImageNet Classification with Deep Convolutional Neural Networks</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[Alexnet] ImageNet Classification with Deep Convolutional Neural Networks">
+    <meta itemprop="description" content="Alexnet Paper Review &amp; Code Implementation">
+    <meta itemprop="datePublished" content="2022-09-01T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/deeplearning/alexnet" class="u-url" itemprop="url">[Alexnet] ImageNet Classification with Deep Convolutional Neural Networks
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h2 id="alexnet-architecture">Alexnet Architecture</h2>
+
+<p>Alexnet은 8개의 학습가능한 레이어로 구성되어 있다. 구체적으로 5개의 컨볼루션 레이어와 3개의 FC 레이어로 구성되어 있다. 아래 그림에서 보여지는 것과 같이 첫 번째와 두 번째 그리고 두 번째와 세 번째 컨볼루션 레이어 사이에만 Max-Pooling 과 Local Response Normalization 가 있다.</p>
+
+<center> <img src="../../images/2022-09-01-alexnet/alexnet.png" style="zoom:50%" /> </center>
+
+<p>본 논문에서는 입력 되는 이미지는 224 x 224 x 3 형태이지만, 이는 잘못 표기된 것이므로 227 (Height) x 227 (Width) x 3 (Channel) 로 수정되어야 한다.</p>
+
+<p><strong>첫 번째 레이어</strong> (컨볼루션 레이어)</p>
+
+<ul>
+  <li>
+    <p>주어진 입력 데이터 (227 x 227 x 3) 에 대해 96개의 11 x 11 x 3 필터 (Filter) 로 컨볼루션 연산을 수행한다. 이 레이어에서는 Stride 을 4로 설정하고, Padding 은 사용하지 않았다.</p>
+  </li>
+  <li>
+    <p>입력 데이터에 대한 Filter의 크기, Stride의 크기, Padding 여부에 따라서 Feature Map 크기가 결정된다. 컨볼루션 레이어의 출력 데이터의 크기를 산정할 때 사용하는 공식은 다음과 같다 (IH = Image Height, IW = Image  Width, FH = Feature Height, FW = Feature Width)</p>
+
+\[\bigg( \frac{IH - FH + 2 \cdot Padding}{Stride} + 1, \frac{IW - FW + 2 \cdot Padding}{Stride} + 1\bigg)\]
+
+\[\bigg( \frac{227 - 11 + 2 \cdot 0}{4}, \frac{227- 11 + 2 \cdot 0}{4} \bigg) = (55,55)\]
+  </li>
+  <li>
+    <p>컨볼루션 연산이 끝난 후의 출력 데이터의 크기 - 55 x 55 x 96</p>
+  </li>
+  <li>
+    <p>활성화 함수 - ReLU &amp; Normalization</p>
+  </li>
+  <li>
+    <p>이어서 3 x 3 Max-Pooling (Stride = 2) 레이어에 들어가게 되면 Feature Map이 27 x 27 x 96 으로 변한다. Max-Pooling 레이어의 출력 데이터는 다음과 같은 공식을 사용한다.</p>
+
+\[\bigg( \bigg \lfloor \frac{IH - FH}{Stride} + 1 \bigg \rfloor, \bigg\lfloor\frac{IW - FW}{Stride} + 1\bigg\rfloor \bigg)\]
+
+\[\bigg( \frac{55 - 3}{2} + 1,  \frac{55 - 3}{2} + 1 \bigg) = (27, 27)\]
+  </li>
+</ul>
+
+<p><strong>두 번째 레이어</strong> (컨볼루션 레이어)</p>
+
+<ul>
+  <li>
+    <p>첫 번째 레이어 출력 데이터 (27 x 27 x 96) 를 두 번째 레이어에서의 입력 데이터로 사용하고, 256 개의 5 x 5 x 96 필터를 사용해 컨볼루션 연산을 한다. 이 레이어에서의 Stride 는 1이고 Padding 은 이전 단계와 다르게 2로 설정되어 있다.</p>
+  </li>
+  <li>
+    <p>Convolution 연산이 끝난 후의 출력 데이터 크기 - 27 x 27 x 256</p>
+  </li>
+  <li>
+    <p>활성화 함수 - ReLU &amp; Normalization</p>
+  </li>
+  <li>
+    <p>첫 번째 컨볼루션 레이어와 비슷하게, 두 번째 컨볼루션 레이어의 출력값이 3 x 3 Maxpooling (Stride = 2) 레이어에 들어가면 Feature Map의 크기는 13 x 13 x 256 으로 변한다.</p>
+  </li>
+</ul>
+
+<p><strong>세 번째 레이어</strong> (컨볼루션 레이어)</p>
+
+<ul>
+  <li>
+    <p>384 개의 3 x 3 x 256 필터를 사용해 이전 단계에서의 Feature Map에 Convolution 연산을 해준다.</p>
+  </li>
+  <li>
+    <p>Stride 과 Padding 둘 다 1 로 설정해주면, 출력 데이터의 크기는 13 x 13 x 384 가 됩니다.</p>
+  </li>
+  <li>
+    <p>활성화 함수 - ReLU</p>
+  </li>
+</ul>
+
+<p><strong>네 번째 레이어</strong> (컨볼루션 레이어)</p>
+
+<ul>
+  <li>384 개의 3 x 3 x 284 필터를 사용해 이전 단계에서의 Feature Map에 Convolution 연산을 해준다.</li>
+  <li>Stride 과 Padding 둘 다 1 로 설정해주면, 출력 데이터의 크기는 13 x 13 x 384 가 됩니다.</li>
+  <li>활성화 함수 - ReLU</li>
+</ul>
+
+<p><strong>다섯 번째 레이어</strong> (컨볼루션 레이어)</p>
+
+<ul>
+  <li>384 개의 3 x 3 x 284 필터를 사용해 이전 단계에서의 Feature Map에 Convolution 연산을 해준다.</li>
+  <li>Stride 과 Padding 둘 다 1 로 설정해주면, 출력 데이터의 크기는 13 x 13 x 384 가 됩니다.</li>
+  <li>활성화 함수 - ReLU</li>
+  <li>세 번째와 네 번째 레이어와 다르게 3 x 3 Maxpooling (Stride = 2) 을 해주면 6 x 6 x 256 특성맵이 나온다.</li>
+</ul>
+
+<p><strong>여섯 번째 레이어 (FC 레이어)</strong></p>
+
+<ul>
+  <li>장난감 블록으로 만든 3D 박스 Feature Map을 상상해보자. 장난감 블록을 한 줄로 높이 쌓아 올린다고 생각하면 된다. 따라서 6 x 6 x 256  Feature Map 한 줄로 쌓아 올리게 되면 줄 (vector) 의 길이 (size)는 9216 가 된다.</li>
+  <li>9216 차원의 벡터를 4096 차원의 벡터와 연결시켜준다.</li>
+  <li>활성화 함수 - ReLU</li>
+</ul>
+
+<p><strong>일곱 번째 레이어 (FC 레이어)</strong></p>
+
+<ul>
+  <li>이 레이어에서는 4096 차원의 벡터를 똑같은 차원의 벡터와 연결시켜준다.</li>
+  <li>활성화 함수 - ReLU</li>
+</ul>
+
+<p><strong>여덟 번째 레이어 (FC 레이어)</strong></p>
+
+<ul>
+  <li>이 레이어는 Alexnet 구조의 마지막 레이어이고, 4096 차원의 벡터를 1000 차원 (레이블 데이터 종류) 벡터에 연결시켜준다.</li>
+  <li>활성화 함수 - Softmax</li>
+</ul>
+
+<h3 id="alexnet-tensorflow-실습">Alexnet Tensorflow 실습</h3>
+
+<h4 id="configuration">Configuration</h4>
+
+<ul>
+  <li>SGD (Stochastic Gradient Descent)</li>
+  <li>Batch Size: 128</li>
+  <li>Momentum: 0.9</li>
+  <li>Learning Rate: 0.01</li>
+  <li>Weight Decay: 0.0005</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Flatten</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span>  <span class="n">BatchNormalization</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">MaxPool2D</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="c1"># 텐서플로우에서 CIFAR-10 데이터셋 로드 학습데이터 50000, 테스트 데이터 10000
+</span><span class="p">(</span><span class="n">train_images</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">),</span> <span class="p">(</span><span class="n">test_images</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">datasets</span><span class="p">.</span><span class="n">cifar10</span><span class="p">.</span><span class="n">load_data</span><span class="p">()</span>
+
+<span class="c1"># CIFAR10 레이블 데이터
+</span><span class="n">CLASS_NAMES</span><span class="o">=</span> <span class="p">[</span><span class="s">'airplane'</span><span class="p">,</span> <span class="s">'automobile'</span><span class="p">,</span> <span class="s">'bird'</span><span class="p">,</span> <span class="s">'cat'</span><span class="p">,</span> <span class="s">'deer'</span><span class="p">,</span> <span class="s">'dog'</span><span class="p">,</span> <span class="s">'frog'</span><span class="p">,</span> <span class="s">'horse'</span><span class="p">,</span> <span class="s">'ship'</span><span class="p">,</span> <span class="s">'truck'</span><span class="p">]</span>
+
+<span class="c1"># 학습데이터에서 train/validation 나누기
+</span><span class="n">train_images</span><span class="p">,</span> <span class="n">validation_images</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">validation_labels</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">train_images</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># 데이터 준비
+</span><span class="n">train_ds</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">Dataset</span><span class="p">.</span><span class="n">from_tensor_slices</span><span class="p">((</span><span class="n">train_images</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">))</span>
+<span class="n">test_ds</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">Dataset</span><span class="p">.</span><span class="n">from_tensor_slices</span><span class="p">((</span><span class="n">test_images</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">))</span>
+<span class="n">validation_ds</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">Dataset</span><span class="p">.</span><span class="n">from_tensor_slices</span><span class="p">((</span><span class="n">validation_images</span><span class="p">,</span> <span class="n">validation_labels</span><span class="p">))</span>
+
+<span class="n">IMG_ROWS</span> <span class="o">=</span> <span class="mi">227</span>
+<span class="n">IMG_COLS</span> <span class="o">=</span> <span class="mi">227</span>
+
+<span class="n">AUTOTUNE</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">experimental</span><span class="p">.</span><span class="n">AUTOTUNE</span>
+<span class="k">def</span> <span class="nf">augment</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="n">label</span><span class="p">):</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">image</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">IMG_ROWS</span><span class="p">,</span><span class="n">IMG_COLS</span><span class="p">))</span> <span class="c1"># CIFAR10 32x32x3 --&gt; 227x227x3 
+</span>    <span class="n">image</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">image</span><span class="p">.</span><span class="n">convert_image_dtype</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">image</span><span class="p">,</span><span class="n">label</span>
+
+<span class="n">train_ds</span> <span class="o">=</span> <span class="p">(</span><span class="n">train_ds</span>
+                <span class="p">.</span><span class="nb">map</span><span class="p">(</span><span class="n">augment</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">prefetch</span><span class="p">(</span><span class="n">AUTOTUNE</span><span class="p">))</span>
+<span class="n">test_ds</span><span class="o">=</span><span class="p">(</span><span class="n">test_ds</span>
+                <span class="p">.</span><span class="nb">map</span><span class="p">(</span><span class="n">augment</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span><span class="n">drop_remainder</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="n">validation_ds</span> <span class="o">=</span> <span class="p">(</span><span class="n">validation_ds</span>
+                <span class="p">.</span><span class="nb">map</span><span class="p">(</span><span class="n">augment</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+
+<span class="c1"># 텐서플로우 Alexnet 모델
+</span><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">96</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">IMG_ROWS</span><span class="p">,</span><span class="n">IMG_COLS</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span>
+    <span class="n">BatchNormalization</span><span class="p">(),</span>
+    <span class="n">MaxPool2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span>
+    <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">"same"</span><span class="p">),</span>
+    <span class="n">BatchNormalization</span><span class="p">(),</span>
+    <span class="n">MaxPool2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span>
+    <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">384</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">"same"</span><span class="p">),</span>
+    <span class="n">BatchNormalization</span><span class="p">(),</span>
+    <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">384</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">"same"</span><span class="p">),</span>
+    <span class="n">BatchNormalization</span><span class="p">(),</span>
+    <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">"same"</span><span class="p">),</span>
+    <span class="n">BatchNormalization</span><span class="p">(),</span>
+    <span class="n">MaxPool2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span>
+    <span class="n">Flatten</span><span class="p">(),</span>
+    <span class="n">Dense</span><span class="p">(</span><span class="mi">4096</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">),</span>
+    <span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">Dense</span><span class="p">(</span><span class="mi">4096</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">),</span>
+    <span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">'softmax'</span><span class="p">)</span>
+<span class="p">])</span>
+
+<span class="n">reduce_lr</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">callbacks</span><span class="p">.</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s">'val_loss'</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_lr</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">)</span>
+
+<span class="n">opt</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">optimizers</span><span class="p">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">model</span><span class="p">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s">'sparse_categorical_crossentropy'</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span> <span class="n">opt</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s">'accuracy'</span><span class="p">])</span>
+<span class="n">model</span><span class="p">.</span><span class="n">summary</span><span class="p">()</span>
+
+<span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">epochs</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">validation_data</span> <span class="o">=</span> <span class="n">validation_ds</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">reduce_lr</span><span class="p">])</span>
+<span class="n">model</span><span class="p">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test_ds</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="reference">Reference:</h4>
+
+<ol>
+  <li>https://wikidocs.net/165426</li>
+  <li>https://papers.nips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html</li>
+  <li>https://cs231n.github.io/convolutional-networks/</li>
+</ol>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#computer-vision" class="page__taxonomy-item p-category" rel="tag">Computer Vision</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#deep-learning" class="page__taxonomy-item p-category" rel="tag">Deep Learning</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-01T00:00:00+09:00">September 1, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="#" class="pagination--pager disabled">Previous</a>
+    
+    
+      <a href="/deeplearning/resnet" class="pagination--pager" title="[Resnet] Deep Residual Learning for Image Recognition
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/usad" rel="permalink">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">USAD Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>

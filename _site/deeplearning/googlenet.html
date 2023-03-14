@@ -1,0 +1,749 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[GoogLeNet] Going Deeper with Convolutions - Journey To Data Science</title>
+<meta name="description" content="GoogLeNet aka Inception Paper Review &amp; Code Implementation">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[GoogLeNet] Going Deeper with Convolutions">
+<meta property="og:url" content="http://localhost:4000/deeplearning/googlenet">
+
+
+  <meta property="og:description" content="GoogLeNet aka Inception Paper Review &amp; Code Implementation">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-07T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/deeplearning/googlenet">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#deeplearning" itemprop="item"><span itemprop="name">Deeplearning</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[GoogLeNet] Going Deeper with Convolutions</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[GoogLeNet] Going Deeper with Convolutions">
+    <meta itemprop="description" content="GoogLeNet aka Inception Paper Review &amp; Code Implementation">
+    <meta itemprop="datePublished" content="2022-09-07T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/deeplearning/googlenet" class="u-url" itemprop="url">[GoogLeNet] Going Deeper with Convolutions
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h2 id="googlenet">GoogLeNet</h2>
+
+<p>CNN 모델 성능 향상을 위해 가장 직접적인 방법이 네트워크의 깊이를 늘리는 방법이다. 하지만 네트워크가 깊어지면 파라미터 수와 연산량이 많아지고 overfitting 문제에 노출될 수 있다. 따라서, 이러한 문제를 해결하기 위해 <strong>Szegedt et al.</strong> 은 네트워크의 구조적 변화가 필요하다고 생각했고, Inception 모듈로 구성된 GoogLeNet으로 문제를 해결했다.</p>
+
+<h3 id="googlenet-architecture">GoogLeNet Architecture</h3>
+
+<center><img src="../../images/2022-09-07-inception/img.png" style="zoom:50%" /></center>
+
+<center><img src="../../images/2022-09-07-inception/architecture.png" style="zoom:50%" /></center>
+
+<p>GoogLeNet은 22 레이어 층으로 구성되어 있고, 총 3개의 특징이 있다</p>
+
+<ul>
+  <li>1 x 1 Filter Conv</li>
+  <li>Inception Module</li>
+  <li>Auxiliary Classifier</li>
+</ul>
+
+<h4 id="1-x-1-filter-conv">1 x 1 Filter Conv</h4>
+
+<p>1 x 1 필터는 차원 축소, 비선형성의 증가, 그리고 계산량 감소를 시킬 수 있다는 장점이 있다. GoogLeNet에서 1 x 1 필터를 Feature Map 차원의 개수를 줄이는 목적으로 사용한다. 예를 들어, 11 x 11 x 300 Feature Map이 있다고 가정해보자. Feature Map에 30개의 5 x 5 필터로 Convolution을 적용하면 11 x 11 x 30 Feature Map이 생성된다 (Stride = 1, Padding = 0). 이때 필요한 연산량은 11 x 11 x 30 x 5 x 5 x 300 = 27225000 이 된다.</p>
+
+<p>이번에는 11 x 11 x 300 Feature Map에 먼저 5개의 1 x 1 필터를 적용한 뒤, 30개의 5 x 5 필터를 적용해보자. 그러면  11 x 11 x 5 Feature Map이 생성되고, 이 Feature Map에 5 x 5 필터를 적용해주면 사이즈가 11 x 11 x 30인 Feature Map이 생성된다. 그러면 연산량은 얼마일까? 1 x 1 필터를 적용했을 때의 연산량은 11 * 11 * 300 * 1 * 1 * 5 = 181500이고, 5 x 5 필터를 적용했을 때의 연산량은 11 * 11 * 5 * 5 * 5 * 30 = 21780 이다. 따라서 총 연산량은 181500 + 21780 = 203280 이다. 1 x 1 필터를 중간에 사용했을 때  더 적은 연산량을 가짐을 확인할 수 있다. 연산량을 줄일 수 있다는 점은 네트워크를 더 깊이 만들 수 있게 도와준다는 점에서 중요하다.</p>
+
+<h4 id="inception-module">Inception Module</h4>
+
+<center><img src="../../images/2022-09-07-inception/inception.png" style="zoom:50%" /></center>
+
+<p>GoogLeNet은 총 9개의 Inception Module 을 사용하고 있다. GoogLeNet에서 사용된 모듈은 1x1 Conv가 포함된 (b) 모델이다. 위에서 설명했듯이 1x1 필터로 Conv 하면 Feature Map 의 차원의 개수를 줄여줄 수 있다. 1x1 필터를 제외한 버전을 살펴보면, 이전 층에서 생성된 Feature Map을 1x1 필터, 3x3 필터, 5x5 필터, 3x3 Max Pooling 결과 얻은 Feature Map들을 모두 함께 쌓아준다.</p>
+
+<h4 id="auxiliary-classifier">Auxiliary Classifier</h4>
+
+<p>신경망의 깊이가 깊어질 수록 vanishing gradient 문제가 발생한다. Vanishing Gradient 문제란 back propagation 하는 과정에서 가중치를 업데이터하면서 gradient가 점점 작아져서 0이 되어버린 것을 의미한다. 따라서 신경망이 제대로 학습되지 않을 수 있다.</p>
+
+<p>Auxiliary classifier는 학습시에만 사용하고 inference 할 때 GoogLeNet 중간에 있는 2개의 auxiliary classifier를 모두 제거해야 한다.</p>
+
+<h3 id="goolenet-tensorflow-실습">GooLeNet Tensorflow 실습</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.datasets</span> <span class="kn">import</span> <span class="n">mnist</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span><span class="p">,</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">Model</span>
+
+<span class="k">class</span> <span class="nc">Inception</span><span class="p">(</span><span class="n">layers</span><span class="p">.</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n1x1</span><span class="p">,</span> <span class="n">n3x3_reduce</span><span class="p">,</span> <span class="n">n3x3</span><span class="p">,</span> <span class="n">n5x5_reduce</span><span class="p">,</span> <span class="n">n5x5</span><span class="p">,</span> <span class="n">pool_proj</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Inception</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">b1</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">n1x1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">BatchNormalization</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">ReLU</span><span class="p">()</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">b2</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">n3x3_reduce</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">BatchNormalization</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">n3x3</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">BatchNormalization</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">ReLU</span><span class="p">()</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">b3</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">n5x5_reduce</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">BatchNormalization</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">n5x5</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">BatchNormalization</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">n5x5</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">BatchNormalization</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">ReLU</span><span class="p">(),</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">b4</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">MaxPool2D</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">pool_proj</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">BatchNormalization</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">ReLU</span><span class="p">(),</span>
+        <span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="p">.</span><span class="n">b1</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="p">.</span><span class="n">b2</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="p">.</span><span class="n">b3</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="p">.</span><span class="n">b4</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">class</span> <span class="nc">GoogleNet</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GoogleNet</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">layer1</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">input_shape</span><span class="p">),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">BatchNormalization</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">ReLU</span><span class="p">()</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">layer2</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">Inception</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+            <span class="n">Inception</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">MaxPool2D</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">layer3</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">Inception</span><span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">208</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+            <span class="n">Inception</span><span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+            <span class="n">Inception</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+            <span class="n">Inception</span><span class="p">(</span><span class="mi">112</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">288</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+            <span class="n">Inception</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">MaxPool2D</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'same'</span><span class="p">),</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">layer4</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">Inception</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+            <span class="n">Inception</span><span class="p">(</span><span class="mi">384</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">384</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">layer5</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">GlobalAveragePooling2D</span><span class="p">(),</span>
+            <span class="n">layers</span><span class="p">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.4</span><span class="p">),</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">'softmax'</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">layer1</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">layer2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">layer3</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">layer4</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">layer5</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">fc</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+    
+<span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span> <span class="o">=</span> <span class="n">mnist</span><span class="p">.</span><span class="n">load_data</span><span class="p">()</span>
+<span class="n">x_train</span> <span class="o">=</span> <span class="n">x_train</span> <span class="o">/</span> <span class="mf">255.</span>
+<span class="n">x_test</span> <span class="o">=</span> <span class="n">x_test</span> <span class="o">/</span> <span class="mf">255.</span>
+<span class="n">x_train</span> <span class="o">=</span> <span class="n">x_train</span><span class="p">[:,:,:,</span><span class="n">tf</span><span class="p">.</span><span class="n">newaxis</span><span class="p">]</span>
+<span class="n">x_test</span> <span class="o">=</span> <span class="n">x_test</span><span class="p">[:,:,:,</span><span class="n">tf</span><span class="p">.</span><span class="n">newaxis</span><span class="p">]</span>
+<span class="c1"># print(x_train.shape)
+</span><span class="n">model</span> <span class="o">=</span> <span class="n">GoogleNet</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">model</span><span class="p">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s">'adam'</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s">'sparse_categorical_crossentropy'</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s">'accuracy'</span><span class="p">])</span>
+<span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">model</span><span class="p">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<h4 id="reference">Reference:</h4>
+
+<ul>
+  <li>https://github.com/marload/ConvNets-TensorFlow2/blob/master/models/GoogLeNet.py</li>
+  <li>https://bskyvision.com/</li>
+  <li>https://arxiv.org/abs/1409.4842</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#computer-vision" class="page__taxonomy-item p-category" rel="tag">Computer Vision</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#deep-learning" class="page__taxonomy-item p-category" rel="tag">Deep Learning</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-07T00:00:00+09:00">September 7, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/deeplearning/vgg" class="pagination--pager" title="[VGG] Very Deep Convolutional Networks For Large-Scale Image Recognition
+">Previous</a>
+    
+    
+      <a href="/deeplearning/seq2seq" class="pagination--pager" title="[Seq2Seq] Sequence to Sequence Learning with Neural Networks
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/usad" rel="permalink">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">USAD Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,743 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[Buy It Again] Modeling Repeat Purchase Recommendations - Journey To Data Science</title>
+<meta name="description" content="Buy It Again Paper Review">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[Buy It Again] Modeling Repeat Purchase Recommendations">
+<meta property="og:url" content="http://localhost:4000/statistics/buyitagain">
+
+
+  <meta property="og:description" content="Buy It Again Paper Review">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-12T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/statistics/buyitagain">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#statistics" itemprop="item"><span itemprop="name">Statistics</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[Buy It Again] Modeling Repeat Purchase Recommendations</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[Buy It Again] Modeling Repeat Purchase Recommendations">
+    <meta itemprop="description" content="Buy It Again Paper Review">
+    <meta itemprop="datePublished" content="2022-09-12T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/statistics/buyitagain" class="u-url" itemprop="url">[Buy It Again] Modeling Repeat Purchase Recommendations
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h3 id="current-problem">Current Problem</h3>
+
+<p>이커머스 기업이 사용하는 추천 기능은 대부분 어떤 상품을 추천할 것인가에만 맞추어져 있다. 이에 반해 고객이 한 번 이상 구매한 상품을 언제 추천해야 하는 것인지에 대한 연구가 활발히 이루어지지 못하고 상태이다. 특히 생활용품과 같이 반복적으로 구매가 일어나는 상품의 경우, 재구매 시기를 적절히 예상하여 상품을 추천해준다면 ‘보다 더 편리한’ ‘더 나은’ 고객 경험을 제공해줄 수 있다.</p>
+
+<p>아마존에서 발표한 <strong>Repeat Purchase Recommendations</strong> 은 고객의 과거 구매 데이터를 바탕으로 고객이 필요한 상품을 다시 추천해주는 기능이다. 예를 들어 1개월 전 아마존 어플에서 펩시 (210ml x 30캔) 을 구매한 이력이 있는 고객에게 상품을 시기적절하게 추천해주는 기능이다.</p>
+
+<h3 id="purchase-probability-density-ppd">Purchase Probability Density (PPD)</h3>
+
+<p><strong>PPD</strong> 를 다음과 같이 정의할 수 있다
+\(P_{A_i}(t_{k+1}=t| t_{1}, t_{2}, t_{3}, …, t_{k})\)</p>
+
+<p>고객의 구매이력 정보를 가지고 고객의 제품 재구매 확률을 계산하고 이를 기반으로 상품을 추천까지 해준다. <strong>Bhagat et al. 2018</strong> 논문에서는 RCP (Repeat Customer Probability), ATD (Aggregate Time Distribution), PG (Poisson-Gamma), MPG (Modified Poisson-Gamma) 총 4개의 모형을 사용해 $P_{A_i} (⋅)$ 구하고자 했다</p>
+
+<p><strong>Assumption1</strong>: 서로 다른 제품을 구매할 사건은 독립이다</p>
+
+<p><strong>Assumption2</strong>: 
+\(P_{A_i} (t_{k+1}=t\ | \ t_1, t_2, t_3, …, t_k)≈Q(A_i)\cdot R_{A_i} (t_{k+1}| t_1, .., t_k)\)</p>
+
+<p>$Q(A_i)$: 고객이 제품을 구매한 횟수가 k 인 경우 (k+1) 번째로 제품을 구매할 재구매 확률</p>
+
+<p>$R_{A_i}$: 고객이 제품을 재구매할 때의 $t_{k+1}$ 분포</p>
+
+<h3 id="1-repeat-customer-probability-rcp">1. Repeat Customer Probability (RCP)</h3>
+
+\[𝑅𝐶𝑃_{𝐴_𝑖}= \frac{\# \ customers \ who \ bought \  product \ 𝐴_𝑖 \ more \ than \ once}{\# \ customers \ who \ bought \  product \ 𝐴_𝑖 \ at \ least \ once}\]
+
+<p>제품 $A_i$ 을 구매한 고객의 수를 활용한 베이스라인 확률 모델 (<strong>Time-Independent</strong>)</p>
+
+<p><strong>Assumption</strong>: 
+\(P_{A_i} (t_{k+1}=t\ | \ t_1, t_2, t_3, …, t_k)≈Q(A_i)≈RCP_{A_i}\)</p>
+
+<p>여기서 $R_{A_i}(\cdot)$ 은 고정된 r 값 이라고 가정한다.</p>
+
+<p>임계값을 사용해 추천 모델의 품질 향상: <strong>$RCP_{A_i}$ &gt; Threshold</strong></p>
+
+<p><strong>Limitation:</strong> 고객이 방금 전에 구매한 제품이 여전히 추천 제품 우선 순위에 올라가 있을 수 있음</p>
+
+<h3 id="2-aggregate-time-distribution-atd-모델"><strong>2. Aggregate Time Distribution</strong> <strong>(ATD)</strong> 모델</h3>
+
+\[𝑅_{𝐴_𝑖} (𝑡)=ln⁡ℕ(𝑡;\mu_{i}, \sigma_{i})=\frac{1}{\sqrt{2𝜋}  𝑡\cdot\sigma_{i}}⋅exp⁡\bigg[-\frac{(lnt - \mu_i)^2}{2\sigma_i^2} \bigg], 𝑡&gt;0\]
+
+<p>제품 $A_i$를 재구매까지 소요된 기간이 로그 정규 분포를 따른다 것을 실험적으로 확인했다. 로그 정규 분포는 Positively Right Skewed 한 분포이기 때문에 항상 양수값만을 가진다. 따라서 음수값을 가짐으로 인해 발생하는 문제에 대한 대안이 될 수 있다. 예를 들어 상품을 재구매까지의 간격, 첫 구매 소요 시간, 구매 가격대 등은 전부 양수 값만 갖는다.</p>
+
+<p>로그 정규 분포를 사용해 어떤 사건의 발생하는 정도가 급격히 증가했다가 낮아지는 것을 모델화 수 있다. 예를 들어, 물건을 구입하거나 이사를 가거나 하는 사건은 한 번 발생하고 나면 발생 확률이 급격이 낮아지는 사건을 모델화 할 수 있다.</p>
+
+<p>주어진 데이터가 로그 정규 분포를 가정하고 있는지 확인하기 위해 MLE로 모수를 구했다. 로그 정규 분포의 모수 $\mu_i$ 와 $\sigma_i$ 를 구하는 방법은 다음과 같다</p>
+
+\[Likelihood \ LN \frac{1}{(2\pi)^{\frac{n}{2}} \cdot (\sigma_i^2)^{\frac{n}{2}}} \cdot \prod \bigg(\frac{1}{t_z} \bigg) \cdot exp \bigg(-\frac{1}{2\sigma^2_i} \sum ln(t_z - \mu_i)^2 \bigg)\]
+
+\[Likelihood \ LLN = -\frac{𝑛}{2}ln⁡(2\pi)−\frac{𝑛}{2}ln⁡(\sigma_i^2)−\frac{1}{2\sigma_i^2}\sum ln(t_z - \mu_i)^2 - \sum ln(t_z)\]
+
+\[\hat{\mu_{mle}} = \frac{1}{n}\sum ln(t_z), \ \hat{\sigma_{mle}^2} = \frac{1}{n} \sum (lnt - \mu_i)^2\]
+
+<p>그리고 논문에서는 데이터를 theoretical 로그정규분포와 비교하기 위해 qqplot을 사용했다.</p>
+
+<center><img src="../../images/2022-09-12-buy_it_again/qqplot.png" style="zoom:50%" /></center>
+
+<ul>
+  <li><strong>그래프 왼쪽 아래, 점들이 선 위</strong> - 데이터 분포의 왼쪽 꼬리가 로그정규분포의 것보다 짧다.</li>
+  <li><strong>그래프 오른쪽 위, 점들이 선 아래</strong> - 데이터 분포의 오른쪽 꼬리가 로그정규분포의 것보다 짧다.</li>
+</ul>
+
+<p><strong>Assumption</strong>: 
+\(P_{A_i} (t_{k+1}=t\ | \ t_1, t_2, t_3, …, t_k)≈R_{A_i}(t)\)</p>
+
+<p>여기서 $Q_{A_i}(\cdot)$ 은 고정된 q 값 이라고 가정한다.</p>
+
+<p>임계값을 사용해 추천 모델의 품질 향상: $R_{A_i}(t)$ <strong>&gt; Threshold</strong></p>
+
+<p><strong>Limitation:</strong> 사람마다 제품을 사용하는 속도는 전부 다 다름. 어떤 사람은 각휴지 화장지 20매를 3주 만에 사용하고 어떤 고객은 동일 제품을 1주일만에 사용할 수 있으므로 사람에 따라 제품 구매 주기가 다를 수 있음.</p>
+
+<h3 id="3-poisson-gamma-mixture-pg-모델"><strong>3. Poisson-Gamma Mixture</strong> <strong>(PG)</strong> 모델</h3>
+
+<p>포아송 분포와 감마 분포의 혼합 모형은 음이항 분포 (Negative Binomial Distribution) 라고도 부른다. 두 분포를 함께 사용한다는 건 포아송의 모수가 감마 분포를 따르도록 만드는 것을 의미한다. 포아송 분포의 모수는 일정한 기간 동안의 재구매율이고, 고객마다 재구매율이 다르기 때문에 감마분포를 따른다고 가정한다.</p>
+
+\[𝑋 \sim 𝑃𝑜𝑖𝑠𝑠𝑜𝑛(\lambda_i)\]
+
+\[\lambda_i \sim 𝐺𝑎𝑚𝑚𝑎(\alpha, \beta)\]
+
+<p><strong>관련 기초 통계 분포 개념정리:</strong></p>
+
+<p><strong>포아송 분포:</strong> 단위 시간 동안의 성공 횟수에 대한 분포 (기간을 어떻게 정의하냐에 따라 ‘Rate’로도 표현 가능)</p>
+
+<p><strong>감마 분포:</strong> 사건을 n번 시행할 때까지의 총 시간을 분포 (지수 분포는 특수한 케이스)</p>
+
+<p><strong>음이항 분포:</strong> 사건이 n번 발생할 때까지의 시행하는 경우의 시행 횟수의 분포 (기하 분포는 특수한 케이스)</p>
+
+<center><img src="../../images/2022-09-12-buy_it_again/step1.png" style="zoom:50%" /></center>
+
+<center><img src="../../images/2022-09-12-buy_it_again/step2.png" style="zoom:50%" /></center>
+
+<center><img src="../../images/2022-09-12-buy_it_again/step3.png" style="zoom:50%" /></center>
+
+<h3 id="4-modified-poisson-gamma-mpg-모델"><strong>4. Modified Poisson-Gamma</strong> <strong>(MPG)</strong> 모델</h3>
+
+\[\lambda_{A_{i,}C_{j}} = \frac{k + \alpha_{A_i}}{t_{purch} + 2 \cdot |t_{mean} - t| + \beta_{A_i}}\]
+
+<p>\(t_{purch}\): 첫 구매부터 마지막 구매까지의 기간</p>
+
+<p>\(t_{mean}\): 평균 재구매 간격</p>
+
+<p>\(t\): 마지막 구매부터 집계일까지의 기간</p>
+
+<p>변형된 포아송-감마 혼합 모형은 하나의 재구매율 \(\lambda\) 모수를 사용하고, \(\lambda\)  는 고객이 가장 최근에 재구매한 제품 \(A_i\)의 <strong>Time</strong> 과 <strong>Dependent</strong> 하다고 가정한다. 그리고 PG 모형과 동일하게 재구매율은 감마분포를 따른다고도 가정한다. (MPG 모델에서의 \(\lambda\) 는 \(t&lt;2 ∗ t_{mean}\) 일 때만 사용한다 )</p>
+
+<p>포아송 모수(\(\lambda\))는 t = 0 to t = \(t_{mean}\)  일 때 커지고, t = \(t_{mean}\)  to t = 2 ∗ \(t_{mean}\) 일때는 작아지는 구조이다. 고객이 평균적으로 제품 \(A_i\)  를 재구매 하는 시간 간격과 가까워지면 재구매율이 높아지고, 멀어질 수록 재구매율이 낮아지게 만들어졌다.</p>
+
+\[P_{A_i} (t_{k+1}=t\ | \ t_1, t_2, t_3, …, t_k)≈Q(A_i) \cdot R_{A_{i,}C_{j}}(t)\]
+
+<p>where \(Q(A_i) = 𝑅𝐶𝑃_{𝐴_𝑖}= \frac{\# \ customers \ who \ bought \  product \ 𝐴_𝑖 \ more \ than \ once}{\# \ customers \ who \ bought \  product \ 𝐴_𝑖 \ at \ least \ once}\)</p>
+
+<p>\(RCP_{A_i}\) 은 time-independent signal 도 추천모델에 활용한다. 특정 상품을 재구매 한다는 것은 신규 고객 혹은 기존 고객을 만족시키고 있다는 의미로 해석할 수 있다. 만약 \(RCP_{A_i}\) 계산을 생략하고 고객이 최근에 구매한 제품을 바탕을 추천을 한다면 sub-optimal 한 고객경험을 제공하게 된다.</p>
+
+<h3 id="offline-experiments-결과">Offline Experiments 결과</h3>
+
+<center><img src="../../images/2022-09-12-buy_it_again/offline.png" style="zoom:50%" /></center>
+
+<ul>
+  <li>ATD, PG, 그리고 MPG 모델이 RCP 베이스라인 모델보다 성능이 좋음.</li>
+  <li>PG/MPG 은 총 구매 행동 패턴 외에 고객의 구매 신호를 사용할 수 있어서 RCP/ATD 보다 성능이 좋음.</li>
+  <li>Time-dependent/independent signal 를 모두 사용한 MPG 모델이 성능이 가장 좋음.</li>
+</ul>
+
+<h3 id="onlineexperiments-결과">OnlineExperiments 결과</h3>
+
+<center><img src="../../images/2022-09-12-buy_it_again/online.png" style="zoom:50%" /></center>
+
+<ul>
+  <li>기존 추천모델보다 ATD 모델이 CTR 7.1% 높음</li>
+  <li>ATD 모델보다 MPG 모델이 CTR 1.3% 높음</li>
+  <li>오프라인 실험에서의 결과와 일치함 (ATD &lt; MPG 성능)</li>
+</ul>
+
+<h4 id="reference">Reference:</h4>
+
+<ul>
+  <li>https://assets.amazon.science/40/e5/89556a6341eaa3d7dacc074ff24d/buy-it-again-modeling-repeat-purchase-recommendations.pdf</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#marketing-science" class="page__taxonomy-item p-category" rel="tag">Marketing Science</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#statistics" class="page__taxonomy-item p-category" rel="tag">Statistics</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-12T00:00:00+09:00">September 12, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/machinelearning/nmf" class="pagination--pager" title="[NMF] Non-negative Matrix Factorization
+">Previous</a>
+    
+    
+      <a href="/deeplearning/transformer" class="pagination--pager" title="[Transformer] Attention Is All You Need
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/usad" rel="permalink">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">USAD Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>

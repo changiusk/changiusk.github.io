@@ -1,0 +1,672 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[FM] Factorization Machines - Journey To Data Science</title>
+<meta name="description" content="FM Algorithm Review &amp; Code Example">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[FM] Factorization Machines">
+<meta property="og:url" content="http://localhost:4000/machinelearning/fm">
+
+
+  <meta property="og:description" content="FM Algorithm Review &amp; Code Example">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-23T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/machinelearning/fm">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#machinelearning" itemprop="item"><span itemprop="name">Machinelearning</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[FM] Factorization Machines</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[FM] Factorization Machines">
+    <meta itemprop="description" content="FM Algorithm Review &amp; Code Example">
+    <meta itemprop="datePublished" content="2022-09-23T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/machinelearning/fm" class="u-url" itemprop="url">[FM] Factorization Machines
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h3 id="introduction">Introduction</h3>
+
+<p>본 논문에서는 희소성이 높은 데이터 환경에서도 realiable parameter를 추정할 수 있는 Factorization Machine (FM) 모델을 소개한다. FM 알고리즘은 Support Vector Machine의 장점과 Factorization Model의 장점만을 결합한 모델이다. 따라서 FM 모델의 장점을 다음과 같이 정리할 수 있다.</p>
+
+<ul>
+  <li><strong>Highly Sparse data</strong> = 희소한 데이터 환경에서 파라미터 추정이 가능하다 (Factorization Model’s 장점).</li>
+  <li><strong>Linear Complexity</strong> = Feature 개수에 따른 선형 복잡도를 갖는다.</li>
+  <li><strong>General Predictor</strong> = 실수나 정수값을 입력데이터로 넣을 수 있다 (SVM’s 장점).</li>
+</ul>
+
+<h4 id="example-feature-representation">Example: Feature Representation</h4>
+<center><img src="../../images/2022-09-23-fm/input.png" style="zoom:50%" /></center>
+
+<p><br /></p>
+
+<p>위 그림과 같은 데이터가 있다고 가정해보자. 그림에서의 파란색 영역은 유저를 의미하는 변수이고, 주황색 영역은 아이템(여기서는 영화 이름)을 나타내는 변수이다. 노란색 영역은 사용자가 다른 영화들에 평점을 준 변수이고, 녹색은 1월 2009년 이후 월 단위 시간을 나타낸다. 마지막으로 붉은색 영역은 해당 영화를 평가하기 전에 평가한 영화를 나태내는 변수이다. 그리고 맨 오른쪽 열은 영화에 대한 평점이다.</p>
+
+<p>예를 들어, 평점을 예측하기 위해 Alice(A)와 StarTrek(ST)사이의 상호작용을 estimate한다고 가정해보자. 인수분해된 상호작용 파라미터인 $&lt;V_{A}, V_{ST}&gt;$를 통해 상호작용을 측정할 수 있다. 우선, Bob(B)과 Charlie(C) 모두 StarWars(SW)에 대한 평점을 각자 4점, 5점 주었기 때문에 유사한 Factor Vector $V_B$, $V_C$를 가진다. 이것은 $&lt;V_{B}, V_{SW}&gt;$와 $&lt;V_{C}, V_{SW}&gt;$가 유사하다는 것을 의미한다. 그리고 Alice는 Titanic(TI)에 5점, Charlie는 1점을 주었기 때문에 Alice와 Charlie는 다른 Factor Vector를 가진다. 그리고 Bob이 StarTrek과 StarWars에 유사한 높은 점수 각각 4점, 5점를 주었기 때문에 두 영화의 Factor Vector는 유사한 상호작용을 가질 것이다. 결론을 말하자면, Alice는 StarTrek에 대해 평점을 낮게 줄 가능성이 있으며, 이를 통해 Alice와 StarTrek에 대한 Factor Vector의 내적이 Alice와 StarWars의 Factor Vector의 내적값과 유사하다는 점을 추측할 수 있다.</p>
+
+<h3 id="model-equation">Model Equation</h3>
+<p>degree d=2인 FM 알고리즘 방정식은 다음과 같다.</p>
+
+\[\hat{y}(x) := w_{0} + \sum_{i=1}^{n} w_{i}x_{i} + \sum_{i=1}^{n}\sum_{j= i + 1}^{n} &lt;v_i,v_j&gt;x_ix_j \\
+\text{where the model parameters that have to be estimated are:} \\
+w_{0} \in \mathbb{R}, \mathbf{w} \in \mathbb{R}^n, \mathbf{V} \in \mathbb{R}^{n \times k}\]
+
+<p>위 식의 첫 번째 항 $w_{0}$은 global bias이다. 두번째 항을 보면 $w_{i}$는 i번째 개별 Feature에 대한 가중치이며, $x_{i}$는 하나의 Feature Vector를 의미한다. 모델링을 통해 개별 Feature의 영향력(w)를 estimate하는 것이라고 볼 수 있다. 하지만, Feature들끼리에 대한 상호작용을 고려할 수 없다는 단점이 있어서 세 번째 항인 $&lt;V_i, V_j&gt;$ 이 추가되었으며 이는 i번째와 j번째 Feature간의 상호작용을 의미한다. 중요한 것은 $w_{i,j}$를 사용하는 것이 아니라 이를 k차원으로 인수분해된 두 vector의 내적를 $&lt;V_i, V_j&gt;$로 표현한 것이다. 이것은 변수간 상호작용의 Latent Vector 이다.</p>
+
+\[&lt;v_i, v_j&gt; := \sum_{f = 1}^{k}v_{i,f} \cdot v_{j, f}\]
+
+<p>$v_i$는 V 내부의 행을 의미하고 k개의 factor를 가진 i번째 변수이며, k는 factorization의 차원이다. 이는 Latent Vector 조합을 모두 고련한다는 것을 의미한다.</p>
+
+<p>Linear Complexity 으로 만드는 식 과정은 다음과 같다.</p>
+<center><img src="../../images/2022-09-23-fm/matrix.png" style="zoom:50%" /></center>
+
+<h3 id="fm-알고리즘-tensorflow">FM 알고리즘 Tensorflow</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># https://github.com/supkoon/factorization_machine_tf
+</span><span class="k">class</span> <span class="nc">FM</span><span class="p">(</span><span class="n">keras</span><span class="p">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_factor</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="p">.</span><span class="n">w_0</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">Variable</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">n</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n_factor</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">inputs</span><span class="p">):</span>
+        <span class="n">degree_1</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">w</span><span class="p">,</span> <span class="n">inputs</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">degree_2</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">reduce_sum</span><span class="p">(</span>
+            <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="nb">pow</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">v</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="o">-</span> <span class="n">tf</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="nb">pow</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="nb">pow</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">v</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="p">,</span> <span class="mi">1</span>
+            <span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="bp">False</span>
+        <span class="p">)</span>
+
+        <span class="n">predict</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">w_0</span> <span class="o">+</span> <span class="n">degree_1</span> <span class="o">+</span> <span class="n">degree_2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">predict</span>
+</code></pre></div></div>
+
+<h4 id="reference">Reference:</h4>
+<ul>
+  <li>https://www.csie.ntu.edu.tw/~b97053/paper/Rendle2010FM.pdf</li>
+  <li>https://www.intelligencelabs.tech/c4d971e3-09a5-4e20-9d82-cc623344602d</li>
+</ul>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#recommender-system" class="page__taxonomy-item p-category" rel="tag">Recommender System</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#machine-learning" class="page__taxonomy-item p-category" rel="tag">Machine Learning</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-23T00:00:00+09:00">September 23, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/deeplearning/neuralcf" class="pagination--pager" title="[NeuMF] Neural Collaborative Filtering
+">Previous</a>
+    
+    
+      <a href="/deeplearning/unet" class="pagination--pager" title="[U-Net] Convolutional Networks for Biomedical Image Segmentation
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/usad" rel="permalink">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">USAD Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>

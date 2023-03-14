@@ -1,0 +1,1195 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[Transformer] Attention Is All You Need - Journey To Data Science</title>
+<meta name="description" content="Transformer Paper Review &amp; Code Implementation">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[Transformer] Attention Is All You Need">
+<meta property="og:url" content="http://localhost:4000/deeplearning/transformer">
+
+
+  <meta property="og:description" content="Transformer Paper Review &amp; Code Implementation">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-15T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/deeplearning/transformer">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#deeplearning" itemprop="item"><span itemprop="name">Deeplearning</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[Transformer] Attention Is All You Need</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[Transformer] Attention Is All You Need">
+    <meta itemprop="description" content="Transformer Paper Review &amp; Code Implementation">
+    <meta itemprop="datePublished" content="2022-09-15T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/deeplearning/transformer" class="u-url" itemprop="url">[Transformer] Attention Is All You Need
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h3 id="introduction">Introduction</h3>
+
+<p>RNN, LSTM, 그리고 GRU 활용 모델은 기계번역 등의 문제에서 뛰어난 성과를 보였다. 하지만 RNN 계열 모델은 재귀적인 특성 때문에 병렬 처리 연산이 불가능하다는 것이 치명적인 단점이다. <strong>그러면 RNN의 어떤 점이 재귀적인 것일까?</strong> RNN 계열 모델은 이전 단계에서 계산한 $h_{t-1}$ 로 현 단계의 $h_t$ 를 순차적으로 생성하는 부분이 재귀적인 특성을 보여준다. 따라서 RNN 계층의 순환 구조가 연산을 병렬화할 수 없게 만든다. 그리고 RNN 계열 모델은 또 한가지의 문제점이 존재한다. 입력과 출력 간의 대응되는 단어들 사이의 거리가 멀수록 그 관계를 모델이 잘 학습하지 못한다 (<strong>Long-term dependency problem</strong>). 이러한 단점을 보완하고자 seq2seq 구조에서의 <strong>Attention</strong>만을 사용하는 것을 바로 <strong>Transformer</strong> 라고한다.</p>
+
+<h3 id="transformer-architecture">Transformer Architecture</h3>
+
+<center><img src="../../images/2022-09-15-transformer/architecture.png" style="zoom:30%" /></center>
+
+<p>지금까지의 Transduction (변환) 모델은 대부분 RNN 계열의 encoder-decoder 구조를 가지고 있는 반면, Transformer은 encoder-decoder 구조를 사용하지만 그 내부는 <strong>attention</strong> 과 <strong>point-wise feed forward network</strong> 만으로 구성되어 있다.</p>
+
+<h4 id="encoder-decoder-stacks">Encoder-Decoder Stacks</h4>
+
+<p>Encoder는 동일한 레이어의 구성으로 6개가 stacked 되어있고, 각 레이어는 아래 2개의 서브레이어로 이루어져 있다.</p>
+
+<ul>
+  <li>Multi-head self-attention</li>
+  <li>position-wise fully connected feed-forward network</li>
+</ul>
+
+<p>각 서브레이어의 출력값은 $LayerNorm(x + SubLayer(x))$ 으로 skip connection 과 normalization 을 적용했다.</p>
+
+<p>Decoder은 6개의 동일한 레이어로 stacked 되어있지만, 3 개의 서브레이어로 이루어져 있다.</p>
+
+<ul>
+  <li>Multi-head self-attention</li>
+  <li>Masked Multi-head self-attention</li>
+  <li>position-wise fully connected feed-forward network</li>
+</ul>
+
+<p>Encoder와 동일하게 skip connection와 normalization을 사용하고, Decoder가 출력값을 생성할 때 다음 출력(미래)에서 정보를 얻는 것을 방지하기 위해 <strong>masking</strong>을 사용한다.</p>
+
+<h4 id="attention--multi-head-attention">Attention &amp; Multi-head Attention</h4>
+
+<center><img src="../../images/2022-09-15-transformer/attention.png" style="zoom:40%" /></center>
+
+<p>Scaled Dot-Product Attention 의 입력값으로 $d_k$ 차원의 query-key와 $d_v$ 차원의 value가 들어간다. 가장 먼저 query와 key의 dot product 을 계산하고, $\sqrt{d_k}$로 나눈 값을 softmax 함수를 통해 values 의 가중치 값을 구한다. 여기서 $\frac{1}{\sqrt{d_k}}$ 값을 곱해주지 않으면 additive attention 보다 성능이 떨어진다고 한다.</p>
+
+\[Attention(Q, K, V) = softmax(\frac{Q \cdot K^T}{\sqrt{d_k}})\cdot V\]
+
+\[MultiHead(Q, K, V ) = Concat(head_1, ..., head_h)W^{O}\]
+
+\[where \ \ head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)\]
+
+\[W_i^Q \in R^{ d_{model} \times d_k}, W_i^K \in R^{d_{model} \times d_k}, W_i^V \in R^{d_{model} \times d_v}\]
+
+<p>본 논문에서는 8 개의 head (attention)  를 사용했다. 그리고 $d_k$ = $d_v$ = $\frac{d_{model}}{h}$ = 64 를 사용했다.</p>
+
+<h4 id="point-wise-feed-forward-network">Point-wise Feed forward Network</h4>
+
+<p>Multi-head self attention 레이어에서 출력된 값을 입력 값으로 받고, ReLU 활성함수를 사용한다. Point-wise Feed Forward Network (FFN) 의 수식은 아래와 같다 (이는 conv 1 x 1 연산을 두 번하는 것도 동일하다).</p>
+
+\[FFN(x) = max(0, xW_i + b_1)W_2 + b_2\]
+
+<h4 id="positional-encoding">Positional Encoding</h4>
+
+<p>Transformer 에서는 RNN 계열의 모델을 사용하지 않기 때문에 sequence에 있는 원소들의 위치에 대한 정보도 함께 넣어줘야 한다. 그래서 Encoder와 Decoder이 시작하기 전에 positional encoding를 입력하고 embedding에 더해준다. 모델에서 위치 정보를 추가하기 위해 사용한 것은 사인과 코사인함수이다.</p>
+
+\[PE_{(pos,2i)}=sin\bigg(\frac{pos}{10000^{\frac{2i}{dmodel}}}\bigg)\]
+
+\[PE_{(pos,2i + 1)}=cos\bigg(\frac{pos}{10000^{\frac{2i}{dmodel}}}\bigg)\]
+
+<h4 id="results">Results</h4>
+
+<p>Machine Translation (EN-DE &amp; EN-FR) 에 대한 실험 결과이다. Transformer (base model)만 봐도 EN-DE 기계번역 문제에서 가장 높은 성능을 보여줬고, 특히 Transformer (big) 은 EN-DE/EN-FR 기계번역 문제에서 모두  state-of-the-art를 수준의 성능을 보여 주었다.</p>
+
+<center><img src="../../images/2022-09-15-transformer/result.png" style="zoom:40%" /></center>
+
+<h4 id="tensorflow-실습">Tensorflow 실습</h4>
+
+<p>트랜스포머 챗봇 코드: https://github.com/ukairia777/tensorflow-transformer</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">urllib.request</span>
+<span class="kn">import</span> <span class="nn">tensorflow_datasets</span> <span class="k">as</span> <span class="n">tfds</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="c1"># urllib.request.urlretrieve("https://raw.githubusercontent.com/songys/Chatbot_data/master/ChatbotData.csv", filename="ChatBotData.csv")
+</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'./ChatBotData.csv'</span><span class="p">)</span>
+
+<span class="c1"># 서브워드텍스트인코더를 사용하여 질문과 답변을 모두 포함한 단어 집합(Vocabulary) 생성
+</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tfds</span><span class="p">.</span><span class="n">deprecated</span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">SubwordTextEncoder</span><span class="p">.</span><span class="n">build_from_corpus</span><span class="p">(</span>
+    <span class="n">train_data</span><span class="p">[</span><span class="s">'Q'</span><span class="p">]</span> <span class="o">+</span> <span class="n">train_data</span><span class="p">[</span><span class="s">'A'</span><span class="p">],</span> <span class="n">target_vocab_size</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">13</span><span class="p">)</span>
+
+<span class="c1"># 시작 토큰과 종료 토큰에 대한 정수 부여.
+</span><span class="n">START_TOKEN</span><span class="p">,</span> <span class="n">END_TOKEN</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokenizer</span><span class="p">.</span><span class="n">vocab_size</span><span class="p">],</span> <span class="p">[</span><span class="n">tokenizer</span><span class="p">.</span><span class="n">vocab_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># 시작 토큰과 종료 토큰을 고려하여 단어 집합의 크기를 + 2
+</span><span class="n">VOCAB_SIZE</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">.</span><span class="n">vocab_size</span> <span class="o">+</span> <span class="mi">2</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'시작 토큰 번호 :'</span><span class="p">,</span><span class="n">START_TOKEN</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'종료 토큰 번호 :'</span><span class="p">,</span><span class="n">END_TOKEN</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'단어 집합의 크기 :'</span><span class="p">,</span><span class="n">VOCAB_SIZE</span><span class="p">)</span>
+
+<span class="n">sample_string</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s">'Q'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># encode() : 텍스트 시퀀스 --&gt; 정수 시퀀스
+</span><span class="n">tokenized_string</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sample_string</span><span class="p">)</span>
+<span class="k">print</span> <span class="p">(</span><span class="s">'정수 인코딩 후의 문장 {}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">tokenized_string</span><span class="p">))</span>
+
+<span class="c1"># decode() : 정수 시퀀스 --&gt; 텍스트 시퀀스
+</span><span class="n">original_string</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="n">tokenized_string</span><span class="p">)</span>
+<span class="k">print</span> <span class="p">(</span><span class="s">'기존 문장: {}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">original_string</span><span class="p">))</span>
+
+<span class="c1"># 최대 길이를 40으로 정의
+</span><span class="n">MAX_LENGTH</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="c1"># 토큰화 / 정수 인코딩 / 시작 토큰과 종료 토큰 추가 / 패딩
+</span><span class="k">def</span> <span class="nf">tokenize_and_filter</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">):</span>
+    <span class="n">tokenized_inputs</span><span class="p">,</span> <span class="n">tokenized_outputs</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">sentence1</span><span class="p">,</span> <span class="n">sentence2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">):</span>
+    <span class="c1"># encode(토큰화 + 정수 인코딩), 시작 토큰과 종료 토큰 추가
+</span>        <span class="n">sentence1</span> <span class="o">=</span> <span class="n">START_TOKEN</span> <span class="o">+</span> <span class="n">tokenizer</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sentence1</span><span class="p">)</span> <span class="o">+</span> <span class="n">END_TOKEN</span>
+        <span class="n">sentence2</span> <span class="o">=</span> <span class="n">START_TOKEN</span> <span class="o">+</span> <span class="n">tokenizer</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sentence2</span><span class="p">)</span> <span class="o">+</span> <span class="n">END_TOKEN</span>
+
+        <span class="n">tokenized_inputs</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence1</span><span class="p">)</span>
+        <span class="n">tokenized_outputs</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence2</span><span class="p">)</span>
+
+    <span class="c1"># 패딩
+</span>    <span class="n">tokenized_inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">preprocessing</span><span class="p">.</span><span class="n">sequence</span><span class="p">.</span><span class="n">pad_sequences</span><span class="p">(</span>
+        <span class="n">tokenized_inputs</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">MAX_LENGTH</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'post'</span><span class="p">)</span>
+    <span class="n">tokenized_outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">preprocessing</span><span class="p">.</span><span class="n">sequence</span><span class="p">.</span><span class="n">pad_sequences</span><span class="p">(</span>
+        <span class="n">tokenized_outputs</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">MAX_LENGTH</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s">'post'</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">tokenized_inputs</span><span class="p">,</span> <span class="n">tokenized_outputs</span>
+
+<span class="n">questions</span><span class="p">,</span> <span class="n">answers</span> <span class="o">=</span> <span class="n">tokenize_and_filter</span><span class="p">(</span><span class="n">train_data</span><span class="p">[</span><span class="s">'Q'</span><span class="p">],</span> <span class="n">train_data</span><span class="p">[</span><span class="s">'A'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'질문 데이터의 크기(shape) :'</span><span class="p">,</span> <span class="n">questions</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'답변 데이터의 크기(shape) :'</span><span class="p">,</span> <span class="n">answers</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># 텐서플로우 dataset을 이용하여 셔플(shuffle)을 수행하되, 배치 크기로 데이터를 묶는다.
+# 또한 이 과정에서 교사 강요(teacher forcing)을 사용하기 위해서 디코더의 입력과 실제값 시퀀스를 구성한다.
+</span><span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">BUFFER_SIZE</span> <span class="o">=</span> <span class="mi">20000</span>
+
+<span class="c1"># 디코더의 실제값 시퀀스에서는 시작 토큰을 제거해야 한다.
+</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">Dataset</span><span class="p">.</span><span class="n">from_tensor_slices</span><span class="p">((</span>
+    <span class="p">{</span>
+        <span class="s">'inputs'</span><span class="p">:</span> <span class="n">questions</span><span class="p">,</span>
+        <span class="s">'dec_inputs'</span><span class="p">:</span> <span class="n">answers</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># 디코더의 입력. 마지막 패딩 토큰이 제거된다.
+</span>    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s">'outputs'</span><span class="p">:</span> <span class="n">answers</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>  <span class="c1"># 맨 처음 토큰이 제거된다. 다시 말해 시작 토큰이 제거된다.
+</span>    <span class="p">},</span>
+<span class="p">))</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">.</span><span class="n">cache</span><span class="p">()</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">BUFFER_SIZE</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">.</span><span class="n">batch</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">.</span><span class="n">prefetch</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">experimental</span><span class="p">.</span><span class="n">AUTOTUNE</span><span class="p">)</span>
+
+<span class="c1"># 최종 버전
+</span><span class="k">class</span> <span class="nc">PositionalEncoding</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">d_model</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PositionalEncoding</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">pos_encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">positional_encoding</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">d_model</span><span class="p">):</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">tf</span><span class="p">.</span><span class="nb">pow</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">position</span> <span class="o">*</span> <span class="n">angles</span>
+
+    <span class="k">def</span> <span class="nf">positional_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">d_model</span><span class="p">):</span>
+        <span class="n">angle_rads</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">get_angles</span><span class="p">(</span>
+            <span class="n">position</span><span class="o">=</span><span class="n">tf</span><span class="p">.</span><span class="nb">range</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">)[:,</span> <span class="n">tf</span><span class="p">.</span><span class="n">newaxis</span><span class="p">],</span>
+            <span class="n">i</span><span class="o">=</span><span class="n">tf</span><span class="p">.</span><span class="nb">range</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">)[</span><span class="n">tf</span><span class="p">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:],</span>
+            <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">)</span>
+
+        <span class="c1"># 배열의 짝수 인덱스(2i)에는 사인 함수 적용
+</span>        <span class="n">sines</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rads</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="c1"># 배열의 홀수 인덱스(2i+1)에는 코사인 함수 적용
+</span>        <span class="n">cosines</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rads</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">angle_rads</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">angle_rads</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">angle_rads</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">sines</span>
+        <span class="n">angle_rads</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cosines</span>
+        <span class="n">pos_encoding</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">constant</span><span class="p">(</span><span class="n">angle_rads</span><span class="p">)</span>
+        <span class="n">pos_encoding</span> <span class="o">=</span> <span class="n">pos_encoding</span><span class="p">[</span><span class="n">tf</span><span class="p">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">...]</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="n">pos_encoding</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pos_encoding</span><span class="p">,</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">inputs</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">pos_encoding</span><span class="p">[:,</span> <span class="p">:</span><span class="n">tf</span><span class="p">.</span><span class="n">shape</span><span class="p">(</span><span class="n">inputs</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="p">:]</span>
+    
+<span class="k">def</span> <span class="nf">scaled_dot_product_attention</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+    <span class="c1"># query 크기 : (batch_size, num_heads, query의 문장 길이, d_model/num_heads)
+</span>    <span class="c1"># key 크기 : (batch_size, num_heads, key의 문장 길이, d_model/num_heads)
+</span>    <span class="c1"># value 크기 : (batch_size, num_heads, value의 문장 길이, d_model/num_heads)
+</span>    <span class="c1"># padding_mask : (batch_size, 1, 1, key의 문장 길이)
+</span>
+    <span class="c1"># Q와 K의 곱. 어텐션 스코어 행렬.
+</span>    <span class="n">matmul_qk</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">transpose_b</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c1"># 스케일링
+</span>    <span class="c1"># dk의 루트값으로 나눠준다.
+</span>    <span class="n">depth</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">shape</span><span class="p">(</span><span class="n">key</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">logits</span> <span class="o">=</span> <span class="n">matmul_qk</span> <span class="o">/</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span>
+
+    <span class="c1"># 마스킹. 어텐션 스코어 행렬의 마스킹 할 위치에 매우 작은 음수값을 넣는다.
+</span>    <span class="c1"># 매우 작은 값이므로 소프트맥스 함수를 지나면 행렬의 해당 위치의 값은 0이 된다.
+</span>    <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">logits</span> <span class="o">+=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1e9</span><span class="p">)</span>
+
+    <span class="c1"># 소프트맥스 함수는 마지막 차원인 key의 문장 길이 방향으로 수행된다.
+</span>    <span class="c1"># attention weight : (batch_size, num_heads, query의 문장 길이, key의 문장 길이)
+</span>    <span class="n">attention_weights</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">nn</span><span class="p">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># output : (batch_size, num_heads, query의 문장 길이, d_model/num_heads)
+</span>    <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">attention_weights</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">attention_weights</span>
+
+<span class="k">class</span> <span class="nc">MultiHeadAttention</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Layer</span><span class="p">):</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"multi_head_attention"</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">MultiHeadAttention</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">num_heads</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+
+    <span class="k">assert</span> <span class="n">d_model</span> <span class="o">%</span> <span class="bp">self</span><span class="p">.</span><span class="n">num_heads</span> <span class="o">==</span> <span class="mi">0</span>
+
+    <span class="c1"># d_model을 num_heads로 나눈 값.
+</span>    <span class="c1"># 논문 기준 : 64
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">d_model</span> <span class="o">//</span> <span class="bp">self</span><span class="p">.</span><span class="n">num_heads</span>
+
+    <span class="c1"># WQ, WK, WV에 해당하는 밀집층 정의
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">query_dense</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">d_model</span><span class="p">)</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">key_dense</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">d_model</span><span class="p">)</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">value_dense</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">d_model</span><span class="p">)</span>
+
+    <span class="c1"># WO에 해당하는 밀집층 정의
+</span>    <span class="bp">self</span><span class="p">.</span><span class="n">dense</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">d_model</span><span class="p">)</span>
+
+  <span class="c1"># num_heads 개수만큼 q, k, v를 split하는 함수
+</span>  <span class="k">def</span> <span class="nf">split_heads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">depth</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">perm</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="s">'query'</span><span class="p">],</span> <span class="n">inputs</span><span class="p">[</span><span class="s">'key'</span><span class="p">],</span> <span class="n">inputs</span><span class="p">[</span>
+        <span class="s">'value'</span><span class="p">],</span> <span class="n">inputs</span><span class="p">[</span><span class="s">'mask'</span><span class="p">]</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">shape</span><span class="p">(</span><span class="n">query</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># 1. WQ, WK, WV에 해당하는 밀집층 지나기
+</span>    <span class="c1"># q : (batch_size, query의 문장 길이, d_model)
+</span>    <span class="c1"># k : (batch_size, key의 문장 길이, d_model)
+</span>    <span class="c1"># v : (batch_size, value의 문장 길이, d_model)
+</span>    <span class="c1"># 참고) 인코더(k, v)-디코더(q) 어텐션에서는 query 길이와 key, value의 길이는 다를 수 있다.
+</span>    <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">query_dense</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">key_dense</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">value_dense</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="c1"># 2. 헤드 나누기
+</span>    <span class="c1"># q : (batch_size, num_heads, query의 문장 길이, d_model/num_heads)
+</span>    <span class="c1"># k : (batch_size, num_heads, key의 문장 길이, d_model/num_heads)
+</span>    <span class="c1"># v : (batch_size, num_heads, value의 문장 길이, d_model/num_heads)
+</span>    <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">split_heads</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">split_heads</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">split_heads</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+
+    <span class="c1"># 3. 스케일드 닷 프로덕트 어텐션. 앞서 구현한 함수 사용.
+</span>    <span class="c1"># (batch_size, num_heads, query의 문장 길이, d_model/num_heads)
+</span>    <span class="n">scaled_attention</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">scaled_dot_product_attention</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+    <span class="c1"># (batch_size, query의 문장 길이, num_heads, d_model/num_heads)
+</span>    <span class="n">scaled_attention</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">scaled_attention</span><span class="p">,</span> <span class="n">perm</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+    <span class="c1"># 4. 헤드 연결(concatenate)하기
+</span>    <span class="c1"># (batch_size, query의 문장 길이, d_model)
+</span>    <span class="n">concat_attention</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">scaled_attention</span><span class="p">,</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">d_model</span><span class="p">))</span>
+
+    <span class="c1"># 5. WO에 해당하는 밀집층 지나기
+</span>    <span class="c1"># (batch_size, query의 문장 길이, d_model)
+</span>    <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">dense</span><span class="p">(</span><span class="n">concat_attention</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">outputs</span>
+
+<span class="k">def</span> <span class="nf">create_padding_mask</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span>
+  <span class="c1"># (batch_size, 1, 1, key의 문장 길이)
+</span>  <span class="k">return</span> <span class="n">mask</span><span class="p">[:,</span> <span class="n">tf</span><span class="p">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">tf</span><span class="p">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+     
+
+<span class="k">def</span> <span class="nf">encoder_layer</span><span class="p">(</span><span class="n">dff</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"encoder_layer"</span><span class="p">):</span>
+  <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">d_model</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">"inputs"</span><span class="p">)</span>
+
+  <span class="c1"># 인코더는 패딩 마스크 사용
+</span>  <span class="n">padding_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">"padding_mask"</span><span class="p">)</span>
+
+  <span class="c1"># 멀티-헤드 어텐션 (첫번째 서브층 / 셀프 어텐션)
+</span>  <span class="n">attention</span> <span class="o">=</span> <span class="n">MultiHeadAttention</span><span class="p">(</span>
+      <span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"attention"</span><span class="p">)({</span>
+          <span class="s">'query'</span><span class="p">:</span> <span class="n">inputs</span><span class="p">,</span> <span class="s">'key'</span><span class="p">:</span> <span class="n">inputs</span><span class="p">,</span> <span class="s">'value'</span><span class="p">:</span> <span class="n">inputs</span><span class="p">,</span> <span class="c1"># Q = K = V
+</span>          <span class="s">'mask'</span><span class="p">:</span> <span class="n">padding_mask</span> <span class="c1"># 패딩 마스크 사용
+</span>      <span class="p">})</span>
+
+  <span class="c1"># 드롭아웃 + 잔차 연결과 층 정규화
+</span>  <span class="n">attention</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="n">dropout</span><span class="p">)(</span><span class="n">attention</span><span class="p">)</span>
+  <span class="n">attention</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">LayerNormalization</span><span class="p">(</span>
+      <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)(</span><span class="n">inputs</span> <span class="o">+</span> <span class="n">attention</span><span class="p">)</span>
+
+  <span class="c1"># 포지션 와이즈 피드 포워드 신경망 (두번째 서브층)
+</span>  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">dff</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">)(</span><span class="n">attention</span><span class="p">)</span>
+  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">d_model</span><span class="p">)(</span><span class="n">outputs</span><span class="p">)</span>
+
+  <span class="c1"># 드롭아웃 + 잔차 연결과 층 정규화
+</span>  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="n">dropout</span><span class="p">)(</span><span class="n">outputs</span><span class="p">)</span>
+  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">LayerNormalization</span><span class="p">(</span>
+      <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)(</span><span class="n">attention</span> <span class="o">+</span> <span class="n">outputs</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Model</span><span class="p">(</span>
+      <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">,</span> <span class="n">padding_mask</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+     
+
+<span class="k">def</span> <span class="nf">encoder</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">dff</span><span class="p">,</span>
+            <span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">"encoder"</span><span class="p">):</span>
+  <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,),</span> <span class="n">name</span><span class="o">=</span><span class="s">"inputs"</span><span class="p">)</span>
+
+  <span class="c1"># 인코더는 패딩 마스크 사용
+</span>  <span class="n">padding_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">"padding_mask"</span><span class="p">)</span>
+
+  <span class="c1"># 포지셔널 인코딩 + 드롭아웃
+</span>  <span class="n">embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+  <span class="n">embeddings</span> <span class="o">*=</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">))</span>
+  <span class="n">embeddings</span> <span class="o">=</span> <span class="n">PositionalEncoding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)(</span><span class="n">embeddings</span><span class="p">)</span>
+  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="n">dropout</span><span class="p">)(</span><span class="n">embeddings</span><span class="p">)</span>
+
+  <span class="c1"># 인코더를 num_layers개 쌓기
+</span>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">):</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">encoder_layer</span><span class="p">(</span><span class="n">dff</span><span class="o">=</span><span class="n">dff</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+        <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"encoder_layer_{}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
+    <span class="p">)([</span><span class="n">outputs</span><span class="p">,</span> <span class="n">padding_mask</span><span class="p">])</span>
+
+  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Model</span><span class="p">(</span>
+      <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">,</span> <span class="n">padding_mask</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+     
+
+<span class="c1"># 디코더의 첫번째 서브층(sublayer)에서 미래 토큰을 Mask하는 함수
+</span><span class="k">def</span> <span class="nf">create_look_ahead_mask</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="n">seq_len</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+  <span class="n">look_ahead_mask</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">tf</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">band_part</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">ones</span><span class="p">((</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">)),</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">padding_mask</span> <span class="o">=</span> <span class="n">create_padding_mask</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1"># 패딩 마스크도 포함
+</span>  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">look_ahead_mask</span><span class="p">,</span> <span class="n">padding_mask</span><span class="p">)</span>
+     
+<span class="k">def</span> <span class="nf">decoder_layer</span><span class="p">(</span><span class="n">dff</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"decoder_layer"</span><span class="p">):</span>
+  <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">d_model</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">"inputs"</span><span class="p">)</span>
+  <span class="n">enc_outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">d_model</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">"encoder_outputs"</span><span class="p">)</span>
+
+  <span class="c1"># 디코더는 룩어헤드 마스크(첫번째 서브층)와 패딩 마스크(두번째 서브층) 둘 다 사용.
+</span>  <span class="n">look_ahead_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span>
+      <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">"look_ahead_mask"</span><span class="p">)</span>
+  <span class="n">padding_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">'padding_mask'</span><span class="p">)</span>
+
+  <span class="c1"># 멀티-헤드 어텐션 (첫번째 서브층 / 마스크드 셀프 어텐션)
+</span>  <span class="n">attention1</span> <span class="o">=</span> <span class="n">MultiHeadAttention</span><span class="p">(</span>
+      <span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"attention_1"</span><span class="p">)(</span><span class="n">inputs</span><span class="o">=</span><span class="p">{</span>
+          <span class="s">'query'</span><span class="p">:</span> <span class="n">inputs</span><span class="p">,</span> <span class="s">'key'</span><span class="p">:</span> <span class="n">inputs</span><span class="p">,</span> <span class="s">'value'</span><span class="p">:</span> <span class="n">inputs</span><span class="p">,</span> <span class="c1"># Q = K = V
+</span>          <span class="s">'mask'</span><span class="p">:</span> <span class="n">look_ahead_mask</span> <span class="c1"># 룩어헤드 마스크
+</span>      <span class="p">})</span>
+
+  <span class="c1"># 잔차 연결과 층 정규화
+</span>  <span class="n">attention1</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">LayerNormalization</span><span class="p">(</span>
+      <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)(</span><span class="n">attention1</span> <span class="o">+</span> <span class="n">inputs</span><span class="p">)</span>
+
+  <span class="c1"># 멀티-헤드 어텐션 (두번째 서브층 / 디코더-인코더 어텐션)
+</span>  <span class="n">attention2</span> <span class="o">=</span> <span class="n">MultiHeadAttention</span><span class="p">(</span>
+      <span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"attention_2"</span><span class="p">)(</span><span class="n">inputs</span><span class="o">=</span><span class="p">{</span>
+          <span class="s">'query'</span><span class="p">:</span> <span class="n">attention1</span><span class="p">,</span> <span class="s">'key'</span><span class="p">:</span> <span class="n">enc_outputs</span><span class="p">,</span> <span class="s">'value'</span><span class="p">:</span> <span class="n">enc_outputs</span><span class="p">,</span> <span class="c1"># Q != K = V
+</span>          <span class="s">'mask'</span><span class="p">:</span> <span class="n">padding_mask</span> <span class="c1"># 패딩 마스크
+</span>      <span class="p">})</span>
+
+  <span class="c1"># 드롭아웃 + 잔차 연결과 층 정규화
+</span>  <span class="n">attention2</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="n">dropout</span><span class="p">)(</span><span class="n">attention2</span><span class="p">)</span>
+  <span class="n">attention2</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">LayerNormalization</span><span class="p">(</span>
+      <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)(</span><span class="n">attention2</span> <span class="o">+</span> <span class="n">attention1</span><span class="p">)</span>
+
+  <span class="c1"># 포지션 와이즈 피드 포워드 신경망 (세번째 서브층)
+</span>  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">dff</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">)(</span><span class="n">attention2</span><span class="p">)</span>
+  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">d_model</span><span class="p">)(</span><span class="n">outputs</span><span class="p">)</span>
+
+  <span class="c1"># 드롭아웃 + 잔차 연결과 층 정규화
+</span>  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="n">dropout</span><span class="p">)(</span><span class="n">outputs</span><span class="p">)</span>
+  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">LayerNormalization</span><span class="p">(</span>
+      <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)(</span><span class="n">outputs</span> <span class="o">+</span> <span class="n">attention2</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Model</span><span class="p">(</span>
+      <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">,</span> <span class="n">enc_outputs</span><span class="p">,</span> <span class="n">look_ahead_mask</span><span class="p">,</span> <span class="n">padding_mask</span><span class="p">],</span>
+      <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+      <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+     
+
+<span class="k">def</span> <span class="nf">decoder</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">dff</span><span class="p">,</span>
+            <span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">'decoder'</span><span class="p">):</span>
+  <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,),</span> <span class="n">name</span><span class="o">=</span><span class="s">'inputs'</span><span class="p">)</span>
+  <span class="n">enc_outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">d_model</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">'encoder_outputs'</span><span class="p">)</span>
+
+  <span class="c1"># 디코더는 룩어헤드 마스크(첫번째 서브층)와 패딩 마스크(두번째 서브층) 둘 다 사용.
+</span>  <span class="n">look_ahead_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span>
+      <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">'look_ahead_mask'</span><span class="p">)</span>
+  <span class="n">padding_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">'padding_mask'</span><span class="p">)</span>
+
+  <span class="c1"># 포지셔널 인코딩 + 드롭아웃
+</span>  <span class="n">embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+  <span class="n">embeddings</span> <span class="o">*=</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">))</span>
+  <span class="n">embeddings</span> <span class="o">=</span> <span class="n">PositionalEncoding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)(</span><span class="n">embeddings</span><span class="p">)</span>
+  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">rate</span><span class="o">=</span><span class="n">dropout</span><span class="p">)(</span><span class="n">embeddings</span><span class="p">)</span>
+
+  <span class="c1"># 디코더를 num_layers개 쌓기
+</span>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">):</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">decoder_layer</span><span class="p">(</span><span class="n">dff</span><span class="o">=</span><span class="n">dff</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+        <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'decoder_layer_{}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
+    <span class="p">)(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">outputs</span><span class="p">,</span> <span class="n">enc_outputs</span><span class="p">,</span> <span class="n">look_ahead_mask</span><span class="p">,</span> <span class="n">padding_mask</span><span class="p">])</span>
+
+  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Model</span><span class="p">(</span>
+      <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">,</span> <span class="n">enc_outputs</span><span class="p">,</span> <span class="n">look_ahead_mask</span><span class="p">,</span> <span class="n">padding_mask</span><span class="p">],</span>
+      <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+      <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+     
+<span class="k">def</span> <span class="nf">transformer</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">dff</span><span class="p">,</span>
+                <span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s">"transformer"</span><span class="p">):</span>
+
+  <span class="c1"># 인코더의 입력
+</span>  <span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,),</span> <span class="n">name</span><span class="o">=</span><span class="s">"inputs"</span><span class="p">)</span>
+
+  <span class="c1"># 디코더의 입력
+</span>  <span class="n">dec_inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,),</span> <span class="n">name</span><span class="o">=</span><span class="s">"dec_inputs"</span><span class="p">)</span>
+
+  <span class="c1"># 인코더의 패딩 마스크
+</span>  <span class="n">enc_padding_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Lambda</span><span class="p">(</span>
+      <span class="n">create_padding_mask</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+      <span class="n">name</span><span class="o">=</span><span class="s">'enc_padding_mask'</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+
+  <span class="c1"># 디코더의 룩어헤드 마스크(첫번째 서브층)
+</span>  <span class="n">look_ahead_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Lambda</span><span class="p">(</span>
+      <span class="n">create_look_ahead_mask</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+      <span class="n">name</span><span class="o">=</span><span class="s">'look_ahead_mask'</span><span class="p">)(</span><span class="n">dec_inputs</span><span class="p">)</span>
+
+  <span class="c1"># 디코더의 패딩 마스크(두번째 서브층)
+</span>  <span class="n">dec_padding_mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Lambda</span><span class="p">(</span>
+      <span class="n">create_padding_mask</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+      <span class="n">name</span><span class="o">=</span><span class="s">'dec_padding_mask'</span><span class="p">)(</span><span class="n">inputs</span><span class="p">)</span>
+
+  <span class="c1"># 인코더의 출력은 enc_outputs. 디코더로 전달된다.
+</span>  <span class="n">enc_outputs</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">dff</span><span class="o">=</span><span class="n">dff</span><span class="p">,</span>
+      <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
+  <span class="p">)(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">,</span> <span class="n">enc_padding_mask</span><span class="p">])</span> <span class="c1"># 인코더의 입력은 입력 문장과 패딩 마스크
+</span>
+  <span class="c1"># 디코더의 출력은 dec_outputs. 출력층으로 전달된다.
+</span>  <span class="n">dec_outputs</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">dff</span><span class="o">=</span><span class="n">dff</span><span class="p">,</span>
+      <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
+  <span class="p">)(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">dec_inputs</span><span class="p">,</span> <span class="n">enc_outputs</span><span class="p">,</span> <span class="n">look_ahead_mask</span><span class="p">,</span> <span class="n">dec_padding_mask</span><span class="p">])</span>
+
+  <span class="c1"># 다음 단어 예측을 위한 출력층
+</span>  <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">"outputs"</span><span class="p">)(</span><span class="n">dec_outputs</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">,</span> <span class="n">dec_inputs</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="n">small_transformer</span> <span class="o">=</span> <span class="n">transformer</span><span class="p">(</span>
+    <span class="n">vocab_size</span> <span class="o">=</span> <span class="mi">9000</span><span class="p">,</span>
+    <span class="n">num_layers</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">dff</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
+    <span class="n">d_model</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
+    <span class="n">num_heads</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">dropout</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">"small_transformer"</span><span class="p">)</span>
+
+<span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">utils</span><span class="p">.</span><span class="n">plot_model</span><span class="p">(</span>
+    <span class="n">small_transformer</span><span class="p">,</span> <span class="n">to_file</span><span class="o">=</span><span class="s">'small_transformer.png'</span><span class="p">,</span> <span class="n">show_shapes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">loss_function</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+  <span class="n">y_true</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">MAX_LENGTH</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+  <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">losses</span><span class="p">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span>
+      <span class="n">from_logits</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s">'none'</span><span class="p">)(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+  <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span>
+  <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">CustomSchedule</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">optimizers</span><span class="p">.</span><span class="n">schedules</span><span class="p">.</span><span class="n">LearningRateSchedule</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">warmup_steps</span><span class="o">=</span><span class="mi">4000</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">CustomSchedule</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">d_model</span><span class="p">,</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">warmup_steps</span> <span class="o">=</span> <span class="n">warmup_steps</span>
+
+  <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+    <span class="n">arg1</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">rsqrt</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+    <span class="n">arg2</span> <span class="o">=</span> <span class="n">step</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">warmup_steps</span><span class="o">**-</span><span class="mf">1.5</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">rsqrt</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">d_model</span><span class="p">)</span> <span class="o">*</span> <span class="n">tf</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">)</span>
+
+<span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">backend</span><span class="p">.</span><span class="n">clear_session</span><span class="p">()</span>
+
+<span class="c1"># Hyper-parameters
+</span><span class="n">NUM_LAYERS</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">D_MODEL</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="n">NUM_HEADS</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">DFF</span> <span class="o">=</span> <span class="mi">512</span>
+<span class="n">DROPOUT</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">transformer</span><span class="p">(</span>
+    <span class="n">vocab_size</span><span class="o">=</span><span class="n">VOCAB_SIZE</span><span class="p">,</span>
+    <span class="n">num_layers</span><span class="o">=</span><span class="n">NUM_LAYERS</span><span class="p">,</span>
+    <span class="n">dff</span><span class="o">=</span><span class="n">DFF</span><span class="p">,</span>
+    <span class="n">d_model</span><span class="o">=</span><span class="n">D_MODEL</span><span class="p">,</span>
+    <span class="n">num_heads</span><span class="o">=</span><span class="n">NUM_HEADS</span><span class="p">,</span>
+    <span class="n">dropout</span><span class="o">=</span><span class="n">DROPOUT</span><span class="p">)</span>
+
+<span class="n">MAX_LENGTH</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="n">CustomSchedule</span><span class="p">(</span><span class="n">D_MODEL</span><span class="p">)</span>
+
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">optimizers</span><span class="p">.</span><span class="n">Adam</span><span class="p">(</span>
+    <span class="n">learning_rate</span><span class="p">,</span> <span class="n">beta_1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta_2</span><span class="o">=</span><span class="mf">0.98</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+  <span class="c1"># ensure labels have shape (batch_size, MAX_LENGTH - 1)
+</span>  <span class="n">y_true</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">MAX_LENGTH</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">metrics</span><span class="p">.</span><span class="n">sparse_categorical_accuracy</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+<span class="n">model</span><span class="p">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss_function</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">])</span>
+
+
+<span class="n">EPOCHS</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">EPOCHS</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
+  <span class="n">sentence</span> <span class="o">=</span> <span class="n">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+
+  <span class="n">sentence</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">expand_dims</span><span class="p">(</span>
+      <span class="n">START_TOKEN</span> <span class="o">+</span> <span class="n">tokenizer</span><span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="o">+</span> <span class="n">END_TOKEN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+  <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">START_TOKEN</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+  <span class="c1"># 디코더의 예측 시작
+</span>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">MAX_LENGTH</span><span class="p">):</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">sentence</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span> <span class="n">training</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="c1"># 현재(마지막) 시점의 예측 단어를 받아온다.
+</span>    <span class="n">predictions</span> <span class="o">=</span> <span class="n">predictions</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+    <span class="n">predicted_id</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">tf</span><span class="p">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="c1"># 만약 마지막 시점의 예측 단어가 종료 토큰이라면 예측을 중단
+</span>    <span class="k">if</span> <span class="n">tf</span><span class="p">.</span><span class="n">equal</span><span class="p">(</span><span class="n">predicted_id</span><span class="p">,</span> <span class="n">END_TOKEN</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+      <span class="k">break</span>
+
+    <span class="c1"># 마지막 시점의 예측 단어를 출력에 연결한다.
+</span>    <span class="c1"># 이는 for문을 통해서 디코더의 입력으로 사용될 예정이다.
+</span>    <span class="n">output</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">concat</span><span class="p">([</span><span class="n">output</span><span class="p">,</span> <span class="n">predicted_id</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">preprocess_sentence</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
+  <span class="n">sentence</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s">"([?.!,])"</span><span class="p">,</span> <span class="sa">r</span><span class="s">" \1 "</span><span class="p">,</span> <span class="n">sentence</span><span class="p">)</span>
+  <span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">.</span><span class="n">strip</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">sentence</span>
+
+<span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
+  <span class="n">prediction</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+
+  <span class="n">predicted_sentence</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span>
+      <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prediction</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">tokenizer</span><span class="p">.</span><span class="n">vocab_size</span><span class="p">])</span>
+
+  <span class="k">print</span><span class="p">(</span><span class="s">'Input: {}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+  <span class="k">print</span><span class="p">(</span><span class="s">'Output: {}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">predicted_sentence</span><span class="p">))</span>
+
+  <span class="k">return</span> <span class="n">predicted_sentence</span>
+
+<span class="n">output</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="s">'영화 볼래?'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="reference">Reference:</h4>
+
+<ul>
+  <li>https://jalammar.github.io/illustrated-transformer/</li>
+  <li>https://arxiv.org/abs/1706.03762</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#natural-language-processing" class="page__taxonomy-item p-category" rel="tag">Natural Language Processing</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#deep-learning" class="page__taxonomy-item p-category" rel="tag">Deep Learning</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-15T00:00:00+09:00">September 15, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/statistics/buyitagain" class="pagination--pager" title="[Buy It Again] Modeling Repeat Purchase Recommendations
+">Previous</a>
+    
+    
+      <a href="/deeplearning/vit" class="pagination--pager" title="[ViT] Transformers For Image Recognition at Scale
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/usad" rel="permalink">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">USAD Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>

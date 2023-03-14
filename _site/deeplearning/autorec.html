@@ -1,0 +1,736 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[AutoRec] Autoencoders Meet Collaborative Filtering - Journey To Data Science</title>
+<meta name="description" content="AutoRec Paper Review &amp; Code Implementation">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[AutoRec] Autoencoders Meet Collaborative Filtering">
+<meta property="og:url" content="http://localhost:4000/deeplearning/autorec">
+
+
+  <meta property="og:description" content="AutoRec Paper Review &amp; Code Implementation">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-20T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/deeplearning/autorec">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#deeplearning" itemprop="item"><span itemprop="name">Deeplearning</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[AutoRec] Autoencoders Meet Collaborative Filtering</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[AutoRec] Autoencoders Meet Collaborative Filtering">
+    <meta itemprop="description" content="AutoRec Paper Review &amp; Code Implementation">
+    <meta itemprop="datePublished" content="2022-09-20T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/deeplearning/autorec" class="u-url" itemprop="url">[AutoRec] Autoencoders Meet Collaborative Filtering
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h3 id="autorec-모델">AutoRec 모델</h3>
+
+<center><img src="../../images/2022-09-20-Autorec/model.png" style="zoom:50%" /></center>
+
+<p><br /></p>
+
+<p>AutoRec 모델은 Auto-Encoder 구조를 사용하고, 사용자 또는 아이템중 하나로Latent Feature를 만들어 Rating Matrix Completion을 수행한다. 본 논문에서는 아이템을 임베딩하는 모델을 <strong>I</strong>-AutoRec, 사용자를 임베딩하는 모델을 <strong>U</strong>-AutoRec 라고 부른다.</p>
+
+<p>사용자(<strong>m 명</strong>)-아이템 (<strong>n 개</strong>) 평점 행렬 $R \in \mathbb{R}^{m \times n}$ 이 있다고 가정한다. AutoRec 은 입력값 $\mathbf{r^{u}} \text{ or } \mathbf{r^{i}}\in \mathbb{R}^{d}$ 를 받아, 이를 복원하는 $h(\mathbf{r^{z}};\theta)$ 를 다음과 같이 정의한다.</p>
+
+\[h(\mathbf{r^{z}}; \theta) = f(\mathbf{W} \cdot g(\mathbf{Vr^{z}} + \boldsymbol{\mu}) + \mathbf{b})
+\\
+\text{where z could be either be } \mathbf{u} \text{ or } \mathbf{i}\]
+
+<p>위 식(1)에서 $f(\cdot)$ 과 $g(\cdot)$ 는 각각 decoder와 encoder의 활성화 함수이다. 본 논문에서는 <strong>I</strong>-AutoRec를 사용했을 때, identify function을 encoder의 활성화 함수로, sigmoid function을 decoder의 활성화 함수로 사용했을 때 성능 (RMSE)이 가장 좋았다고 한다. 그리고 마지막으로 AutoRec 에서는 다음과 같은 목적함수를 사용한다. 여기서 목적함수를 계산할 때 <strong>observed ratings</strong> $\mathcal{{O}}$만 고려한다는 것이다.</p>
+
+\[\min_\theta \sum^n_{z=1} \| \mathbf{r}^{(z)} - h(\mathbf{r}^{(z)}; \theta) \|^2_\mathcal{O} + \frac{\lambda}{2} \left( \| \mathbf{W}_F^2 \| + \| \mathbf{V} \|^2_F \right)\]
+
+<h3 id="result">Result</h3>
+
+<center><img src="../../images/2022-09-20-Autorec/result.png" style="zoom:50%" /></center>
+
+<h3 id="autorec-tensorflow-implementation">AutoRec Tensorflow Implementation</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Layer</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">regularizers</span><span class="p">,</span> <span class="n">optimizers</span><span class="p">,</span> <span class="n">metrics</span>
+
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZipFile</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="k">class</span> <span class="nc">Encoder</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_hidden</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Encoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">n_dims</span> <span class="o">=</span> <span class="n">num_hidden</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">encoder_layer</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">n_dims</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">kernel_regularizer</span><span class="o">=</span><span class="n">regularizers</span><span class="p">.</span><span class="n">l2</span><span class="p">(</span><span class="mf">0.01</span><span class="p">))</span>
+    
+    <span class="o">@</span><span class="n">tf</span><span class="p">.</span><span class="n">function</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">encoder_layer</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+    
+<span class="k">class</span> <span class="nc">Decoder</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_reconstruction</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Decoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">n_dims</span> <span class="o">=</span> <span class="n">num_reconstruction</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">decoder_layer</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">n_dims</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s">'sigmoid'</span><span class="p">)</span>
+        <span class="c1"># self.decoder_layer = Dense(self.n_dims)
+</span>        
+    <span class="o">@</span><span class="n">tf</span><span class="p">.</span><span class="n">function</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">decoder_layer</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">AutoRec</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_hidden</span><span class="p">,</span> <span class="n">num_reconstruction</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutoRec</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">(</span><span class="n">num_hidden</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">(</span><span class="n">num_reconstruction</span><span class="p">)</span>
+
+    <span class="o">@</span><span class="n">tf</span><span class="p">.</span><span class="n">function</span>       
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+    
+<span class="k">def</span> <span class="nf">ObservedOnlyMSELoss</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    <span class="c1"># 참고: https://supkoon.tistory.com/36
+</span>    <span class="n">mask</span> <span class="o">=</span> <span class="n">y_true</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="n">mask_float</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">cast</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">tf</span><span class="p">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">masked_error</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="nb">pow</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">mask_float</span> <span class="o">*</span> <span class="n">y_pred</span><span class="p">,</span><span class="n">y_true</span><span class="p">),</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">masked_error</span>
+
+
+<span class="n">movielens_data_file_url</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">"http://files.grouplens.org/datasets/movielens/ml-latest-small.zip"</span>
+<span class="p">)</span>
+<span class="n">movielens_zipped_file</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">utils</span><span class="p">.</span><span class="n">get_file</span><span class="p">(</span>
+    <span class="s">"ml-latest-small.zip"</span><span class="p">,</span> <span class="n">movielens_data_file_url</span><span class="p">,</span> <span class="n">extract</span><span class="o">=</span><span class="bp">False</span>
+<span class="p">)</span>
+<span class="n">keras_datasets_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">movielens_zipped_file</span><span class="p">).</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">movielens_dir</span> <span class="o">=</span> <span class="n">keras_datasets_path</span> <span class="o">/</span> <span class="s">"ml-latest-small"</span>
+
+<span class="c1"># Only extract the data the first time the script is run.
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">movielens_dir</span><span class="p">.</span><span class="n">exists</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">movielens_zipped_file</span><span class="p">,</span> <span class="s">"r"</span><span class="p">)</span><span class="k">as</span> <span class="nb">zip</span><span class="p">:</span>
+        <span class="c1"># Extract files
+</span>        <span class="k">print</span><span class="p">(</span><span class="s">"Extracting all the files now..."</span><span class="p">)</span>
+        <span class="nb">zip</span><span class="p">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">keras_datasets_path</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Done!"</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">dataloader</span><span class="p">():</span>
+    <span class="c1"># 참고: https://github.com/supkoon/AutoRec-tf/blob/master/AutoRec.py
+</span>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">test_size</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">movielens_dir</span> <span class="o">/</span> <span class="s">"ratings.csv"</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">test_size</span> <span class="o">=</span> <span class="n">test_size</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">ratings_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">ratings_df</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">"userId"</span><span class="p">,</span><span class="s">"movieId"</span><span class="p">,</span><span class="s">"rating"</span><span class="p">,</span><span class="s">"timestamp"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">num_user</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">ratings_df</span><span class="p">.</span><span class="n">userId</span><span class="p">.</span><span class="n">unique</span><span class="p">())</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">num_item</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">ratings_df</span><span class="p">.</span><span class="n">movieId</span><span class="p">.</span><span class="n">unique</span><span class="p">())</span>
+        
+    <span class="k">def</span> <span class="nf">make_user_autorec_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user_item_df</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">ratings_df</span><span class="p">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="s">"rating"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s">"userId"</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s">"movieId"</span><span class="p">)</span>
+        <span class="n">user_item_df</span><span class="p">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">user_item_df</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">user_item_df</span><span class="p">)</span>
+        <span class="n">train_df</span><span class="p">,</span><span class="n">test_df</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">user_item_df</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">test_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">train_df</span><span class="p">,</span><span class="n">test_df</span>
+
+    <span class="k">def</span> <span class="nf">make_item_autorec_input</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">item_user_df</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">ratings_df</span><span class="p">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="s">"rating"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s">"movieId"</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s">"userId"</span><span class="p">)</span>
+        <span class="n">item_user_df</span><span class="p">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">item_user_df</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">item_user_df</span><span class="p">)</span>
+        <span class="n">train_df</span><span class="p">,</span><span class="n">test_df</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">item_user_df</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">test_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">train_df</span><span class="p">,</span><span class="n">test_df</span>
+    
+<span class="n">dataloader</span> <span class="o">=</span> <span class="n">dataloader</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>   
+<span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span> <span class="o">=</span> <span class="n">dataloader</span><span class="p">.</span><span class="n">make_item_autorec_input</span><span class="p">()</span>
+<span class="n">num_features</span> <span class="o">=</span> <span class="n">dataloader</span><span class="p">.</span><span class="n">num_user</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoRec</span><span class="p">(</span><span class="n">num_features</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">num_features</span><span class="p">)</span>
+<span class="n">model</span><span class="p">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">optimizers</span><span class="p">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">),</span> <span class="n">loss</span><span class="o">=</span> <span class="n">ObservedOnlyMSELoss</span><span class="p">,</span> <span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="n">metrics</span><span class="p">.</span><span class="n">RootMeanSquaredError</span><span class="p">()])</span>
+<span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">test_data</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h4 id="reference">Reference:</h4>
+
+<ul>
+  <li>http://users.cecs.anu.edu.au/~u5098633/papers/www15.pdf</li>
+  <li>https://keras.io/examples/structured_data/collaborative_filtering_movielens/</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#recommender-system" class="page__taxonomy-item p-category" rel="tag">Recommender System</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#deep-learning" class="page__taxonomy-item p-category" rel="tag">Deep Learning</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-20T00:00:00+09:00">September 20, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/deeplearning/vit" class="pagination--pager" title="[ViT] Transformers For Image Recognition at Scale
+">Previous</a>
+    
+    
+      <a href="/deeplearning/bert" class="pagination--pager" title="[BERT] Pre-training of Deep Bidirectional Transformers for Language Understanding
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/usad" rel="permalink">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">USAD Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>

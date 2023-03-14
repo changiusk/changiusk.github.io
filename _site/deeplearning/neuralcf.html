@@ -1,0 +1,768 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[NeuMF] Neural Collaborative Filtering - Journey To Data Science</title>
+<meta name="description" content="NeuMF Paper Review &amp; Code Implementation">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[NeuMF] Neural Collaborative Filtering">
+<meta property="og:url" content="http://localhost:4000/deeplearning/neuralcf">
+
+
+  <meta property="og:description" content="NeuMF Paper Review &amp; Code Implementation">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-22T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/deeplearning/neuralcf">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#deeplearning" itemprop="item"><span itemprop="name">Deeplearning</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[NeuMF] Neural Collaborative Filtering</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[NeuMF] Neural Collaborative Filtering">
+    <meta itemprop="description" content="NeuMF Paper Review &amp; Code Implementation">
+    <meta itemprop="datePublished" content="2022-09-22T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/deeplearning/neuralcf" class="u-url" itemprop="url">[NeuMF] Neural Collaborative Filtering
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h3 id="introduction">Introduction</h3>
+
+<p>넷플릭스 경진대회의해 알려진 Matrix Factorization은 추천시스템 분야에서 널리 사용되는 방법이다. 이는 사용자와 아이템이 상호작용하는 Latent Matrix을 Inner Product를 통해 사용자의 Latent Matrix과 아이템의 Latent Matrix로 분해한다. 본 논문에서는 Inner Product 기반의 Matrix Factorization은 선형적인 관계만 모델링한다는 한계에 대해 지적하고, 사용자와 아이템간의 관계를 더 잘 표현할 수 있는 신경망 기반의 NeuMF 모델을 제안했다.</p>
+
+<h3 id="matrix-factorization-문제점">Matrix Factorization 문제점</h3>
+
+<center><img src="../../images/2022-09-22-NeuralCF/mf.png" style="zoom:50%" /></center>
+
+<p>위 그림(a)은 사용자(row)-아이템(column) 관계를 행렬로 표현하고 있다. 여기서 $y_{u,i}=1$은 <strong>user</strong> $u$ 와 <strong>item</strong> $i$ 간의 상호작용이 있었음을 나타낸다. 상호작용이란 사용자가 아이템을 확인했거나, 구매했다는 등의 implicit 한 정보를 의마한다. 따라서 $y_{u,i}=0$ 은 <strong>user</strong> $u$ 와 <strong>item</strong> $i$ 간의 상호작용이 없었다는 뜻이지, <strong>user</strong> $u$ 가 <strong>item</strong> $i$ 를 선호하지 않는다는 뜻은 아니다.</p>
+
+<p>Inner Product 기반의 Matrix Factorization에 어떤 문제가 있는지 자카드 유사도(Jaccard Similarity) 를 고려하는 경우를 가정한다.그러면 위 그림(a)와 같은 행렬로부터 다음과 같은 관계가 성립한다고 볼 수 있다.</p>
+
+\[s_{23}(0.66) &gt; s_{12}(0.5) &gt; s_{13}(0.4)\]
+
+<p>즉, <strong>사용자 2와 사용자 3</strong>이 <strong>사용자 1과 사용자 2</strong> 보다 비슷하고, <strong>사용자 1과 사용자 2</strong>이 <strong>사용자 1과 사용자 3</strong> 보다 비슷하다는 뜻이다. 위 그림 (b) 는 이런 관계를 기하학적으로 보여주고 있다. Matrix Factorization 의 한계는 사용자 4가 등장했을 때 발생한다. 사용자 4와 나머지 사용자의 자카드 유사도 관계는 다음과 같다.</p>
+
+\[s_{41}(0.6) &gt; s_{43}(0.4) &gt; s_{42}(0.2)\]
+
+<p>하지만 그림 (b)에  $p_4$를 어디에 놔도 $p_3$보다 $p_2$가 더 가깝기 때문에 ranking loss가 커질 수 밖에 없다. 이런 한계는 사용자와 아이템의 관계를 저차원의 공간에 표현 하는 데에서 기인한다. 따라서 본 논문에서는 사용자와 아이템의 상호작용을 더 복잡한 차원에서 표현할 수 있도록 신표현할 수 있도록 신경망을 활용해 해결하고자 했다.</p>
+
+<h3 id="neural-collaborative-filtering-framework">Neural Collaborative Filtering Framework</h3>
+
+<center><img src="../../images/2022-09-22-NeuralCF/architecture.png" style="zoom:50%" /></center>
+
+<p>본 논문에서 제안한 Neural Collaboraitive Filtering의 General Framework 는 총 4개의 레이어로 구성되었다: (1) <strong>Input Layer</strong>, (2) <strong>Embedding Layers</strong>, (3) <strong>Neural CF Layers</strong>, 그리고 (4) <strong>Output Layers</strong>.</p>
+
+<p>Input Layer는 각각 사용자($v_u^U$)와 아이템($v_i^I$)을 나타내는 원핫인코디드된 Feature vector로 구성되어 있다. Embedding Layer 에서 Sparse한 이 Feature vector를 Dense한 Latent vector로 바꿔주는 역할을 한다. 임베딩이 된 사용자와 아이템 Latent vector를 concatenation한 vector를 Neural CF Layers에 들어가게 되고 복잡하고 비선형적인 데이터 관계를 학습하게 된다. 마지막으로 Output Layers에서 사용자 $u$와 아이템 $i$가 얼마나 관련 있는지를 나타내는 $\hat{y_{u,i}}$ 값을 계산한다.</p>
+
+<h4 id="generalized-matrix-factorization-gmf">Generalized Matrix Factorization (GMF)</h4>
+
+<p>저자는 <strong>Matrix Factorization</strong> 역시 NCF framework의 특수한 케이스가 됨을 보여주고 이를 GMF라고 한다. Latent Vector $p_u$ ($P^Tv^U_u$), $q_i$ ($Q^Tv^I_i$) 라고 정의했을 때, 첫번째 NCF layer의 mapping function을 다음과 같다.</p>
+
+\[\phi_1(p_u,q_i) = p_u\odot q_i\]
+
+<p>이 결과를 output layer에 project한다면 아래와 같이 표현할 수 있다. 여기서 $a_{out}$ 를 identical function으로 가정하고, $h$를 uniform vector <strong>1</strong>로 정의한다면, 기존 Matrix Factorization과 동일해집니다.</p>
+
+\[\hat{y}_{ui} = a_{out}(h^T(p_u \odot q_i))\]
+
+<p>GMF란 $a_{out}$ 와 $h$를 아래와 같이 두어 <strong>Matrix Factorization</strong>를 일반화한 모델이다.</p>
+
+\[a_{out} = \frac{1}{1 + e^{−x}},\ h^T = [h_1 , ... , h_k],\]
+
+<h4 id="multi-layer-perceptron-mlp">Multi-Layer Perceptron (MLP)</h4>
+
+<p>GMF의 <strong>fixed/linear</strong> (element-wise product)한 특징으로 인해 사용자와 아이템간의 복잡한 관계를 표현하지 못하고, MLP는 <strong>flexible/non-linear</strong>하기 때문에 복잡한 관계를 표현할 수 있다.</p>
+
+\[z_1 = \phi_1(p_u,q_i) = \begin{bmatrix}p_u\\q_i\end{bmatrix},\\
+\phi_2(z_1) = a_2(W_2^Tz_1+b_2), \\
+... \\
+\phi_L(z_{L-1}) = a_L(W_L^Tz_{L-1}+b_L), \\
+\hat{y}_{ui} = \sigma(h^T\phi_L(Z_{L-1}))\]
+
+<h4 id="fusion-of-gmf-and-mlp">Fusion of GMF and MLP</h4>
+
+<p>본 논문에서는 GMF와 MLP를 통합한 모델은 제안한다.</p>
+
+\[\phi^{GMF} = p_{u}^{G} \odot q_{i}^{G}, \\
+\phi^{MLP} = a_{L}(W_{L}^{T}(a_{L-1}(...a_{2}(W_{2}^{T} \begin{bmatrix} p_{u}^{M} \\ q_{i}^{M} \end{bmatrix}+b_{2})...))+b_{L}), \\
+\hat{y}_{u,i} = \sigma(h^{T} \begin{bmatrix}\phi^{GMF} \\ \phi^{MLP} \end{bmatrix})\]
+
+<p>$p^G_u$와 $q^G_i$는 GMF를 위한 embedding이고 $p^M_u$와 $q^M_i$는 MLP를 위한 embedding이다. 그리고 $a_L$ 활성화 함수로 ReLU를 사용했다고 한다.</p>
+
+<h4 id="result">Result</h4>
+
+<center><img src="../../images/2022-09-22-NeuralCF/result.png" style="zoom:50%" /></center>
+
+<h3 id="nmf-모델-tensorflow-실습">NMF 모델 Tensorflow 실습</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">NeuMF</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_num</span><span class="p">,</span> <span class="n">item_num</span><span class="p">,</span> <span class="n">latent_features</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NeuMF</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">latent_features</span> <span class="o">=</span> <span class="n">latent_features</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">user_num</span> <span class="o">=</span> <span class="n">user_num</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">item_num</span> <span class="o">=</span> <span class="n">item_num</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        
+        <span class="bp">self</span><span class="p">.</span><span class="n">gmf_embedding_user</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">user_num</span><span class="p">,</span> <span class="n">output_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">latent_features</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">gmf_embedding_item</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">item_num</span><span class="p">,</span> <span class="n">output_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">latent_features</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">mlp_embedding_user</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">user_num</span><span class="p">,</span> <span class="n">output_dim</span> <span class="o">=</span> <span class="mi">32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">mlp_embedding_item</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">item_num</span><span class="p">,</span> <span class="n">output_dim</span> <span class="o">=</span> <span class="mi">32</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="p">.</span><span class="n">mlp_vector1</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">mlp_vector2</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">'relu'</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="p">.</span><span class="n">prediction</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">'sigmoid'</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="n">user_input</span><span class="p">,</span> <span class="n">item_input</span> <span class="o">=</span> <span class="n">inputs</span>
+
+        <span class="c1"># Embedding layer
+</span>        <span class="n">gmf_embedding_user</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">gmf_embedding_user</span><span class="p">(</span><span class="n">user_input</span><span class="p">)</span>
+        <span class="n">gmf_embedding_item</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">gmf_embedding_user</span><span class="p">(</span><span class="n">item_input</span><span class="p">)</span>
+        <span class="n">mlp_embedding_user</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">gmf_embedding_user</span><span class="p">(</span><span class="n">user_input</span><span class="p">)</span>
+        <span class="n">mlp_embedding_item</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">gmf_embedding_user</span><span class="p">(</span><span class="n">item_input</span><span class="p">)</span>
+
+        <span class="c1"># GMF part
+</span>        <span class="n">gmf_user_latent</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()(</span><span class="n">gmf_embedding_user</span><span class="p">)</span>
+        <span class="n">gmf_item_latent</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()(</span><span class="n">gmf_embedding_item</span><span class="p">)</span>
+        <span class="n">gmf_vector</span> <span class="o">=</span> <span class="n">Multiply</span><span class="p">()([</span><span class="n">gmf_user_latent</span><span class="p">,</span> <span class="n">gmf_item_latent</span><span class="p">])</span> 
+        
+        <span class="c1"># MLP part 
+</span>        <span class="n">mlp_user_latent</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()(</span><span class="n">mlp_embedding_user</span><span class="p">)</span>
+        <span class="n">mlp_item_latent</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()(</span><span class="n">mlp_embedding_item</span><span class="p">)</span>
+        <span class="n">mlp_vector</span> <span class="o">=</span> <span class="n">Concatenate</span><span class="p">()([</span><span class="n">mlp_user_latent</span><span class="p">,</span> <span class="n">mlp_item_latent</span><span class="p">])</span>
+        
+        <span class="n">mlp_vector1</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">mlp_vector1</span><span class="p">(</span><span class="n">mlp_vector</span><span class="p">)</span>
+        <span class="n">mlp_vector2</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">mlp_vector2</span><span class="p">(</span><span class="n">mlp_vector1</span><span class="p">)</span>
+        
+        <span class="c1"># Concatenate GMF and MLP parts
+</span>        <span class="n">gmf_vector</span> <span class="o">=</span> <span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="p">.</span><span class="n">alpha</span><span class="p">)(</span><span class="n">gmf_vector</span><span class="p">)</span>
+        <span class="n">mlp_vector2</span> <span class="o">=</span> <span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="p">.</span><span class="n">alpha</span><span class="p">))(</span><span class="n">mlp_vector2</span><span class="p">)</span>
+        <span class="n">prediction_vector</span> <span class="o">=</span> <span class="n">Concatenate</span><span class="p">()([</span><span class="n">gmf_vector</span><span class="p">,</span> <span class="n">mlp_vector2</span><span class="p">])</span>
+        
+        <span class="c1"># Prediction Layer
+</span>        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">prediction</span><span class="p">(</span><span class="n">prediction_vector</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">train_instances</span><span class="p">(</span><span class="n">uids</span><span class="p">,</span> <span class="n">iids</span><span class="p">,</span> <span class="n">num_neg</span><span class="p">,</span> <span class="n">num_items</span><span class="p">):</span>
+    <span class="n">user_input</span><span class="p">,</span> <span class="n">item_input</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[],[],[]</span>
+    <span class="n">zipped</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">uids</span><span class="p">,</span> <span class="n">iids</span><span class="p">))</span> <span class="c1"># train (user, item) 세트
+</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">uids</span><span class="p">,</span> <span class="n">iids</span><span class="p">):</span>
+
+        <span class="c1"># pos item
+</span>        <span class="n">user_input</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> 
+        <span class="n">item_input</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>  
+        <span class="n">labels</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
+
+        <span class="c1"># neg item
+</span>        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_neg</span><span class="p">):</span>
+
+            <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="n">num_items</span><span class="p">)</span> 
+            <span class="k">while</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span> 
+                <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="n">num_items</span><span class="p">)</span> 
+
+            <span class="n">user_input</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>  <span class="c1"># [u1, u1,  u1,  ...]
+</span>            <span class="n">item_input</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>  <span class="c1"># [pos_i, neg_j1, neg_j2, ...]
+</span>            <span class="n">labels</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>      <span class="c1"># [1, 0,  0,  ...]
+</span>
+    <span class="n">user_input</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">user_input</span><span class="p">).</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">item_input</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">item_input</span><span class="p">).</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">labels</span><span class="p">).</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">user_input</span><span class="p">,</span> <span class="n">item_input</span><span class="p">,</span> <span class="n">labels</span>
+
+<span class="n">num_neg</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="c1"># train_user_ids: 학습 데이터의 유저 아이디 (unique)
+# train_item_ids: 학습 데이터의 아이템 아이디 (unique)
+# items: 학습 + 테스트의 아이템 아이디
+</span><span class="n">train_user_ids</span><span class="p">,</span> <span class="n">train_item_ids</span><span class="p">,</span> <span class="n">items</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">()</span> <span class="c1"># 로드데이터 각자 구현 필요
+</span>
+<span class="n">user_input</span><span class="p">,</span> <span class="n">item_input</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">train_instances</span><span class="p">(</span><span class="n">train_user_ids</span><span class="p">,</span> <span class="n">train_item_ids</span><span class="p">,</span> <span class="n">num_neg</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">NeuMF</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))</span> 
+<span class="n">model</span><span class="p">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span> <span class="s">'adam'</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s">'binary_crossentropy'</span><span class="p">)</span>
+<span class="n">model</span><span class="p">.</span><span class="n">fit</span><span class="p">([</span><span class="n">user_input</span><span class="p">,</span> <span class="n">item_input</span><span class="p">],</span><span class="n">labels</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="reference">Reference:</h4>
+
+<ul>
+  <li>https://github.com/ngduyanhece/neuMF/blob/master/NeuMF.py</li>
+  <li>https://leehyejin91.github.io/post-ncf/</li>
+  <li>https://supkoon.tistory.com/28</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#recommender-system" class="page__taxonomy-item p-category" rel="tag">Recommender System</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#deep-learning" class="page__taxonomy-item p-category" rel="tag">Deep Learning</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-22T00:00:00+09:00">September 22, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/deeplearning/bert" class="pagination--pager" title="[BERT] Pre-training of Deep Bidirectional Transformers for Language Understanding
+">Previous</a>
+    
+    
+      <a href="/machinelearning/fm" class="pagination--pager" title="[FM] Factorization Machines
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/usad" rel="permalink">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">USAD Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>

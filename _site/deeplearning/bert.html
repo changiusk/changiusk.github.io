@@ -1,0 +1,780 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[BERT] Pre-training of Deep Bidirectional Transformers for Language Understanding - Journey To Data Science</title>
+<meta name="description" content="BERT Paper Review &amp; Code Example">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[BERT] Pre-training of Deep Bidirectional Transformers for Language Understanding">
+<meta property="og:url" content="http://localhost:4000/deeplearning/bert">
+
+
+  <meta property="og:description" content="BERT Paper Review &amp; Code Example">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-21T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/deeplearning/bert">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#deeplearning" itemprop="item"><span itemprop="name">Deeplearning</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[BERT] Pre-training of Deep Bidirectional Transformers for Language Understanding</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[BERT] Pre-training of Deep Bidirectional Transformers for Language Understanding">
+    <meta itemprop="description" content="BERT Paper Review &amp; Code Example">
+    <meta itemprop="datePublished" content="2022-09-21T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/deeplearning/bert" class="u-url" itemprop="url">[BERT] Pre-training of Deep Bidirectional Transformers for Language Understanding
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h3 id="introduction">Introduction</h3>
+
+<p>BERT(<strong>B</strong>idirectional <strong>E</strong>ncoder <strong>R</strong>epresentations from <strong>T</strong>ransformers)는 2018년에 구글 리서치 팀에 의해 공개된 Language Representation 모델이다. 이름에서 알 수 있듯이 BERT 모델은 양방향성 (<strong>Bidirectional</strong>) 특성을 갖고 있다. 그렇다면 양방형 문맥을 고려한다는 것에 무슨 의미이고, 어떤 장점이 있을까? 양방향으로 학습한다는 것은 전체적인 문맥을 파악하기 위함이다. 직관적으로 생각해보면 단방향에서 오는 정보보다 양방향에서 오는 정보가 많기 때문에 정보의 질에 차이가 날 수 밖에 없다. 예를 들어, <strong>“She is eating a bowl of salad”</strong>라는 문장이 있을 때, <strong>“eat”</strong>라는 동사를 정해놓고 <strong>“salad”</strong>를 사용하지 않는다. <strong>“salad”</strong>를 놓고 어떤 액션을 하고 있다는 말을 하고 싶었을 수도 있다. 이렇듯 양방향으로 학습하면 전체적인 문맥을 이해할 수 있다.</p>
+
+<h3 id="bert-architecture">BERT Architecture</h3>
+
+<center> <img src="../../images/2022-09-21-bert/architecture.png" style="zoom:30%" /> </center>
+
+<p>BERT는 Transformer의 Encoder 부분만 사용한다. BERT는 구조의 크기에 따라 Base와 Large 2가지 유형의 모델로 나눠진다. <strong>BERT-Base</strong> 모델의 Hyperparameter는 $L = 12$, $H = 768$, $A = 12$ 이고 <strong>BERT-Large</strong> 모델의 Hyperparameter는 $L = 24$, $H = 1024$, $A = 16$ 이다.</p>
+
+<ul>
+  <li><strong>L</strong> = # Transformer Block</li>
+  <li><strong>H</strong> = # Hidden Layer</li>
+  <li><strong>A</strong> = # Self Attention Head</li>
+</ul>
+
+<p>더하여 BERT는 기존의 자연어처리 사전학습 모델의 문제점을 보완하기 위해 두 가지 unsupervised tasks: (1) Masked language model, (2) next sentence prediction (NSP) 방법을 사용해 학습한다.</p>
+
+<center> <img src="../../images/2022-09-21-bert/pre_fine.png" style="zoom:50%" /> </center>
+
+<h4 id="masked-language-model-mlm">Masked Language Model (MLM)</h4>
+
+<p>MLM 는 [Mask]된 단어를 예측하면서 전체적인 문맥을 파악하는 능력을 학습한다. MLM 수행 과정은 다음과 같다. 우선 입력 데이터의 토큰 중 15%는 무작위로 선택한다. 선택된 토큰중 80% [Mask] 토큰으로, 10%는 랜덤한 단어로 바뀐다. 그리고 나머지 10%는 오리지널한 단어 그 상태 그대로 유지된다.</p>
+
+<h4 id="next-sentence-prediction-nsp">Next Sentence Prediction (NSP)</h4>
+
+<p>NSP는 두 번째 문장이 첫 번째 문장 다음으로 오는 문장인지 맞추는 문제를 푼다. 첫 번째 문장과 두 번째 문장은 [SEP]로 구분한다. 두 번째 문장이 첫 번째 문장을 연속하는지는 50% 비율로 참인 문장과, 50%의 랜덤하게 추출된 문장으로 구성해 학습한다. 이 과정을 통해 문맥과 문장의 관계를 학습할 수 있다.</p>
+
+<h3 id="bert-input">BERT Input</h3>
+
+<center> <img src="../../images/2022-09-21-bert/input.png" style="zoom:50%" /> </center>
+
+<p><br /></p>
+
+<p>위 그림처럼 세 가지 임베딩(<strong>Token</strong>, <strong>Segment</strong>, <strong>Position</strong>)을 사용해서 문장을 표현한다.</p>
+
+<ul>
+  <li><strong>Token Embedding</strong>: 모든 문장의 시작을 표현하는 특수 토큰 [CLS], 문장을 구분하기 위한 특수 토큰 [SEP], 그리고 단어별 임베딩으로 구성</li>
+  <li><strong>Segment Embedding</strong>: 문장을 구분하기 위한 임베딩</li>
+  <li><strong>Position Embedding</strong>: Transformer 구조에서 사용된 토큰의 위치를  알려주는 임베딩</li>
+</ul>
+
+<p>이 세 가지 임베딩을 더한 임베딩을 입력 데이터로 사용하게 된다.</p>
+
+<h3 id="bert-gpt-elmo-comparison">BERT, GPT, ELMo Comparison</h3>
+
+<center> <img src="../../images/2022-09-21-bert/difference.png" style="zoom:50%" /> </center>
+
+<h4 id="results">Results</h4>
+
+<p>GLUE 데이터셋에 대한 BERT 실험 결과</p>
+
+<center> <img src="../../images/2022-09-21-bert/result1.png" style="zoom:50%" /> </center>
+
+<h4 id="bert-tensorflow-code-example">BERT Tensorflow Code Example</h4>
+
+<p>https://www.tensorflow.org/text/tutorials/classify_text_with_bert</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># !pip install -q -U "tensorflow-text==2.8.*"
+# !pip install -q tf-models-official==2.7.0
+</span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="nn">tensorflow_hub</span> <span class="k">as</span> <span class="n">hub</span>
+<span class="kn">import</span> <span class="nn">tensorflow_text</span> <span class="k">as</span> <span class="n">text</span>
+<span class="kn">from</span> <span class="nn">official.nlp</span> <span class="kn">import</span> <span class="n">optimization</span>  <span class="c1"># to create AdamW optimizer
+</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">tf</span><span class="p">.</span><span class="n">get_logger</span><span class="p">().</span><span class="n">setLevel</span><span class="p">(</span><span class="s">'ERROR'</span><span class="p">)</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s">'https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz'</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">utils</span><span class="p">.</span><span class="n">get_file</span><span class="p">(</span><span class="s">'aclImdb_v1.tar.gz'</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span>
+                                  <span class="n">untar</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">cache_dir</span><span class="o">=</span><span class="s">'.'</span><span class="p">,</span>
+                                  <span class="n">cache_subdir</span><span class="o">=</span><span class="s">''</span><span class="p">)</span>
+
+<span class="n">dataset_dir</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="s">'aclImdb'</span><span class="p">)</span>
+
+<span class="n">train_dir</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_dir</span><span class="p">,</span> <span class="s">'train'</span><span class="p">)</span>
+
+<span class="c1"># remove unused folders to make it easier to load the data
+</span><span class="n">remove_dir</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">train_dir</span><span class="p">,</span> <span class="s">'unsup'</span><span class="p">)</span>
+<span class="n">shutil</span><span class="p">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">remove_dir</span><span class="p">)</span>
+
+<span class="n">AUTOTUNE</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">AUTOTUNE</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="n">raw_train_ds</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">utils</span><span class="p">.</span><span class="n">text_dataset_from_directory</span><span class="p">(</span>
+    <span class="s">'aclImdb/train'</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+    <span class="n">validation_split</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">subset</span><span class="o">=</span><span class="s">'training'</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+<span class="n">class_names</span> <span class="o">=</span> <span class="n">raw_train_ds</span><span class="p">.</span><span class="n">class_names</span>
+<span class="n">train_ds</span> <span class="o">=</span> <span class="n">raw_train_ds</span><span class="p">.</span><span class="n">cache</span><span class="p">().</span><span class="n">prefetch</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="n">AUTOTUNE</span><span class="p">)</span>
+
+<span class="n">val_ds</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">utils</span><span class="p">.</span><span class="n">text_dataset_from_directory</span><span class="p">(</span>
+    <span class="s">'aclImdb/train'</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+    <span class="n">validation_split</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">subset</span><span class="o">=</span><span class="s">'validation'</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+<span class="n">val_ds</span> <span class="o">=</span> <span class="n">val_ds</span><span class="p">.</span><span class="n">cache</span><span class="p">().</span><span class="n">prefetch</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="n">AUTOTUNE</span><span class="p">)</span>
+
+<span class="n">test_ds</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">utils</span><span class="p">.</span><span class="n">text_dataset_from_directory</span><span class="p">(</span>
+    <span class="s">'aclImdb/test'</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+
+<span class="n">test_ds</span> <span class="o">=</span> <span class="n">test_ds</span><span class="p">.</span><span class="n">cache</span><span class="p">().</span><span class="n">prefetch</span><span class="p">(</span><span class="n">buffer_size</span><span class="o">=</span><span class="n">AUTOTUNE</span><span class="p">)</span>
+
+<span class="n">tfhub_handle_encoder</span> <span class="o">=</span> <span class="s">'https://tfhub.dev/tensorflow/small_bert/bert_en_uncased_L-4_H-512_A-8/1'</span>
+<span class="n">tfhub_handle_preprocess</span> <span class="o">=</span> <span class="s">'https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3'</span>
+<span class="n">bert_preprocess_model</span> <span class="o">=</span> <span class="n">hub</span><span class="p">.</span><span class="n">KerasLayer</span><span class="p">(</span><span class="n">tfhub_handle_preprocess</span><span class="p">)</span>
+<span class="n">bert_model</span> <span class="o">=</span> <span class="n">hub</span><span class="p">.</span><span class="n">KerasLayer</span><span class="p">(</span><span class="n">tfhub_handle_encoder</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">build_classifier_model</span><span class="p">():</span>
+  <span class="n">text_input</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="p">.</span><span class="n">string</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'text'</span><span class="p">)</span>
+  <span class="n">preprocessing_layer</span> <span class="o">=</span> <span class="n">hub</span><span class="p">.</span><span class="n">KerasLayer</span><span class="p">(</span><span class="n">tfhub_handle_preprocess</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'preprocessing'</span><span class="p">)</span>
+  <span class="n">encoder_inputs</span> <span class="o">=</span> <span class="n">preprocessing_layer</span><span class="p">(</span><span class="n">text_input</span><span class="p">)</span>
+  <span class="n">encoder</span> <span class="o">=</span> <span class="n">hub</span><span class="p">.</span><span class="n">KerasLayer</span><span class="p">(</span><span class="n">tfhub_handle_encoder</span><span class="p">,</span> <span class="n">trainable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'BERT_encoder'</span><span class="p">)</span>
+  <span class="n">outputs</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">(</span><span class="n">encoder_inputs</span><span class="p">)</span>
+  <span class="n">net</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="s">'pooled_output'</span><span class="p">]</span> <span class="c1"># CLS
+</span>  <span class="n">net</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)(</span><span class="n">net</span><span class="p">)</span>
+  <span class="n">net</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'classifier'</span><span class="p">)(</span><span class="n">net</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">Model</span><span class="p">(</span><span class="n">text_input</span><span class="p">,</span> <span class="n">net</span><span class="p">)</span>
+
+<span class="n">classifier_model</span> <span class="o">=</span> <span class="n">build_classifier_model</span><span class="p">()</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">keras</span><span class="p">.</span><span class="n">losses</span><span class="p">.</span><span class="n">BinaryCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">metrics</span><span class="p">.</span><span class="n">BinaryAccuracy</span><span class="p">()</span>
+
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">steps_per_epoch</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">experimental</span><span class="p">.</span><span class="n">cardinality</span><span class="p">(</span><span class="n">train_ds</span><span class="p">).</span><span class="n">numpy</span><span class="p">()</span>
+<span class="n">num_train_steps</span> <span class="o">=</span> <span class="n">steps_per_epoch</span> <span class="o">*</span> <span class="n">epochs</span>
+<span class="n">num_warmup_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span><span class="o">*</span><span class="n">num_train_steps</span><span class="p">)</span>
+
+<span class="n">init_lr</span> <span class="o">=</span> <span class="mf">3e-5</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimization</span><span class="p">.</span><span class="n">create_optimizer</span><span class="p">(</span><span class="n">init_lr</span><span class="o">=</span><span class="n">init_lr</span><span class="p">,</span>
+                                          <span class="n">num_train_steps</span><span class="o">=</span><span class="n">num_train_steps</span><span class="p">,</span>
+                                          <span class="n">num_warmup_steps</span><span class="o">=</span><span class="n">num_warmup_steps</span><span class="p">,</span>
+                                          <span class="n">optimizer_type</span><span class="o">=</span><span class="s">'adamw'</span><span class="p">)</span>
+
+<span class="n">classifier_model</span><span class="p">.</span><span class="nb">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                         <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
+                         <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">)</span>
+
+<span class="n">history</span> <span class="o">=</span> <span class="n">classifier_model</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">train_ds</span><span class="p">,</span>
+                               <span class="n">validation_data</span><span class="o">=</span><span class="n">val_ds</span><span class="p">,</span>
+                               <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">)</span>
+
+<span class="n">examples</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">'this is such an amazing movie!'</span><span class="p">,</span>  <span class="c1"># this is the same sentence tried earlier
+</span>    <span class="s">'The movie was great!'</span><span class="p">,</span>
+    <span class="s">'The movie was meh.'</span><span class="p">,</span>
+    <span class="s">'The movie was okish.'</span><span class="p">,</span>
+    <span class="s">'The movie was terrible...'</span>
+<span class="p">]</span>
+
+<span class="n">original_results</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">classifier_model</span><span class="p">(</span><span class="n">tf</span><span class="p">.</span><span class="n">constant</span><span class="p">(</span><span class="n">examples</span><span class="p">)))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'Results from the model in memory:'</span><span class="p">)</span>
+<span class="n">print_my_examples</span><span class="p">(</span><span class="n">examples</span><span class="p">,</span> <span class="n">original_results</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="reference">Reference:</h4>
+
+<ul>
+  <li>https://towardsdatascience.com/bert-explained-state-of-the-art-language-model-for-nlp-f8b21a9b6270</li>
+  <li>https://hwiyong.tistory.com/392</li>
+  <li>https://keep-steady.tistory.com/19</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#natural-language-processing" class="page__taxonomy-item p-category" rel="tag">Natural Language Processing</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#deep-learning" class="page__taxonomy-item p-category" rel="tag">Deep Learning</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-21T00:00:00+09:00">September 21, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/deeplearning/autorec" class="pagination--pager" title="[AutoRec] Autoencoders Meet Collaborative Filtering
+">Previous</a>
+    
+    
+      <a href="/deeplearning/neuralcf" class="pagination--pager" title="[NeuMF] Neural Collaborative Filtering
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/usad" rel="permalink">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">USAD Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>

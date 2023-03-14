@@ -1,0 +1,738 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[ViT] Transformers For Image Recognition at Scale - Journey To Data Science</title>
+<meta name="description" content="ViT Paper Review &amp; Code Implementation">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[ViT] Transformers For Image Recognition at Scale">
+<meta property="og:url" content="http://localhost:4000/deeplearning/vit">
+
+
+  <meta property="og:description" content="ViT Paper Review &amp; Code Implementation">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-09-18T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/deeplearning/vit">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#deeplearning" itemprop="item"><span itemprop="name">Deeplearning</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[ViT] Transformers For Image Recognition at Scale</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[ViT] Transformers For Image Recognition at Scale">
+    <meta itemprop="description" content="ViT Paper Review &amp; Code Implementation">
+    <meta itemprop="datePublished" content="2022-09-18T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/deeplearning/vit" class="u-url" itemprop="url">[ViT] Transformers For Image Recognition at Scale
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h3 id="introduction">Introduction</h3>
+
+<p>Attention 계열 구조는 자연어 처리분야에 많이 사용되어 왔다. 하지만 비전 분야에서는 CNN 계열 모델이 우세하게 사용되고 있다. 본 논문에서는 Transformer를 이미지 분류 문제에 적용한 연구 실험을 기술했다.</p>
+
+<h3 id="model-architecture">Model Architecture</h3>
+
+<center><img src="../../images/2022-09-18-vit/architecture.png" style="zoom:40%" /></center>
+
+<p><br /></p>
+
+<p>전체적인 ViT 모델의 구조는 ‘<strong>All You Need Is Attention</strong>’ 논문에서 나오는 Transformer Encoder 구조와 비슷하다. 다만 텍스트 형식의 데이터를 사용하지 않고 여러 이미지 패치를 사용한다. 본 논문에서는 $(H, W, C)$ 크기의 이미지를 $N$ 개의$(P, P)$ 패치로 자른 후, 각 패치를 $1D$ sequence 형태인 $P^2 \cdot C$ 차원의 vector로 만든다. 그리고 BERT의 $[class]$ 토큰과 비슷하게, classification token을 Position Embedding[0]에 더해준 것을 Position Embedding[1:] 과 Patch Embedding을 더해준 것에 concatenate 해준다. 저자는 2D-aware position embeddings도 사용해봤는데 성능 향상에 도움되지 않았다고 한다.</p>
+
+<p>그리고 Transformer Encoder에 Patch + Position Embedding (+ [class] embedding) 값을 입력데이터로 넣어준다. 최종적으로 Linear연산을 통해 classification을 하게 된다. 여기서  Transformer Encoder는 Normalization이 맨 앞으로 온 것을 빼면 똑같은 구조를 사용한다.</p>
+
+<center><img src="../../images/2022-09-18-vit/equation.png" style="zoom:40%" /></center>
+
+<h3 id="result">Result</h3>
+
+<center><img src="../../images/2022-09-18-vit/result.png" style="zoom:40%" /></center>
+
+<h4 id="vit-tensorflow-실습-코드">ViT Tensorflow 실습 코드</h4>
+
+<p><strong>참고</strong>: https://dzlab.github.io/notebooks/tensorflow/vision/classification/2021/10/01/vision_transformer.html</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">LayerNormalization</span><span class="p">,</span> <span class="n">MultiHeadAttention</span><span class="p">,</span> <span class="n">Add</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Embedding</span><span class="p">,</span> <span class="n">Concatenate</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Sequential</span>
+
+<span class="k">class</span> <span class="nc">Patches</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span> 
+    <span class="c1"># From Keras Examples
+</span>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Patches</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">patch_size</span> <span class="o">=</span> <span class="n">patch_size</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">):</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">shape</span><span class="p">(</span><span class="n">images</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">patches</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">image</span><span class="p">.</span><span class="n">extract_patches</span><span class="p">(</span>
+            <span class="n">images</span><span class="o">=</span><span class="n">images</span><span class="p">,</span>
+            <span class="n">sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">patch_size</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">patch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">patch_size</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">patch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="n">rates</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s">"VALID"</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">patch_dims</span> <span class="o">=</span> <span class="n">patches</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">patches</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">patch_dims</span><span class="p">])</span>
+        <span class="c1"># print(patches.shape)
+</span>        <span class="k">return</span> <span class="n">patches</span>
+
+<span class="k">def</span> <span class="nf">mlp_head</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">"mlp_head_dim"</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s">"gelu"</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Dropout</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">"dropout_rate"</span><span class="p">])(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">"mlp_head_dim"</span><span class="p">])(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Dropout</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">"dropout_rate"</span><span class="p">])(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">def</span> <span class="nf">transformer_encoder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="n">skip_connection_1</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">LayerNormalization</span><span class="p">()(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">MultiHeadAttention</span><span class="p">(</span><span class="n">num_heads</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">"num_heads"</span><span class="p">],</span> <span class="n">key_dim</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s">"embedding_dim"</span><span class="p">])(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Add</span><span class="p">()([</span><span class="n">x</span><span class="p">,</span> <span class="n">skip_connection_1</span><span class="p">])</span>
+
+    <span class="n">skip_connection_2</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">LayerNormalization</span><span class="p">()(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">mlp_head</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Add</span><span class="p">()([</span><span class="n">x</span><span class="p">,</span> <span class="n">skip_connection_2</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">PatchEncoder</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PatchEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">num_patches</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">"num_patches"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">projection_dim</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">"embedding_dim"</span><span class="p">]</span>
+        <span class="n">w_init</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">random_normal_initializer</span><span class="p">()</span>
+        <span class="n">class_token</span> <span class="o">=</span> <span class="n">w_init</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">projection_dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">"float32"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">class_token</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">initial_value</span><span class="o">=</span><span class="n">class_token</span><span class="p">,</span> <span class="n">trainable</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">projection</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">projection_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">position_embedding</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">num_patches</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">projection_dim</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patch</span><span class="p">):</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">shape</span><span class="p">(</span><span class="n">patch</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># reshape the class token embedins
+</span>        <span class="n">class_token</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">class_token</span><span class="p">,</span> <span class="n">multiples</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">class_token</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">class_token</span><span class="p">,</span> <span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">projection_dim</span><span class="p">))</span>
+        <span class="c1"># calculate patches embeddings
+</span>        <span class="n">patches_embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">projection</span><span class="p">(</span><span class="n">patch</span><span class="p">)</span>
+        <span class="n">patches_embedding</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">concat</span><span class="p">([</span><span class="n">class_token</span><span class="p">,</span> <span class="n">patches_embedding</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># calcualte positional embeddings
+</span>        <span class="n">positions</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">num_patches</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">positions_embed</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">position_embedding</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+        <span class="c1"># add both embeddings
+</span>        <span class="n">encoded</span> <span class="o">=</span> <span class="n">patches_embedding</span> <span class="o">+</span> <span class="n">positions_embed</span>
+        <span class="k">return</span> <span class="n">encoded</span>
+
+<span class="k">def</span> <span class="nf">ViT</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="c1"># Inputs and Embedding
+</span>    <span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">"img_size"</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s">"img_size"</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s">"num_channels"</span><span class="p">])</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Patches</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">'patch_size'</span><span class="p">])(</span><span class="n">inputs</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">PatchEncoder</span><span class="p">()(</span><span class="n">p</span><span class="p">)</span>  
+    <span class="c1"># Encoder
+</span>    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">"num_layers"</span><span class="p">]):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">transformer_encoder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+    <span class="c1"># Classification head
+</span>    <span class="n">x</span> <span class="o">=</span> <span class="n">LayerNormalization</span><span class="p">()(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">"num_classes"</span><span class="p">],</span> <span class="n">activation</span> <span class="o">=</span> <span class="s">"softmax"</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">config</span><span class="p">[</span><span class="s">"embedding_dim"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">64</span>
+    <span class="n">config</span><span class="p">[</span><span class="s">"mlp_head_dim"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">64</span>
+    <span class="n">config</span><span class="p">[</span><span class="s">"dropout_rate"</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">config</span><span class="p">[</span><span class="s">"num_heads"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">config</span><span class="p">[</span><span class="s">"num_classes"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">config</span><span class="p">[</span><span class="s">"num_patches"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">256</span>    
+    <span class="n">config</span><span class="p">[</span><span class="s">"num_layers"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>    
+    <span class="n">config</span><span class="p">[</span><span class="s">"img_size"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">256</span>
+    <span class="n">config</span><span class="p">[</span><span class="s">"patch_size"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">config</span><span class="p">[</span><span class="s">"num_channels"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">config</span><span class="p">[</span><span class="s">"num_classes"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ViT</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s">"img_size"</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s">"img_size"</span><span class="p">]</span> <span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#computer-vision" class="page__taxonomy-item p-category" rel="tag">Computer Vision</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#deep-learning" class="page__taxonomy-item p-category" rel="tag">Deep Learning</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-09-18T00:00:00+09:00">September 18, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/deeplearning/transformer" class="pagination--pager" title="[Transformer] Attention Is All You Need
+">Previous</a>
+    
+    
+      <a href="/deeplearning/autorec" class="pagination--pager" title="[AutoRec] Autoencoders Meet Collaborative Filtering
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/usad" rel="permalink">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">USAD Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,786 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>[USAD] UnSupervised Anomaly Detection on Multivariate Time Series - Journey To Data Science</title>
+<meta name="description" content="USAD Paper Review &amp; Code Implementation">
+
+
+  <meta name="author" content="James Chang">
+  
+  <meta property="article:author" content="James Chang">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Journey To Data Science">
+<meta property="og:title" content="[USAD] UnSupervised Anomaly Detection on Multivariate Time Series">
+<meta property="og:url" content="http://localhost:4000/deeplearning/usad">
+
+
+  <meta property="og:description" content="USAD Paper Review &amp; Code Implementation">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2022-10-03T00:00:00+09:00">
+
+
+
+
+
+  
+
+  
+
+
+<link rel="canonical" href="http://localhost:4000/deeplearning/usad">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": "James Chang",
+      "url": "http://localhost:4000/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Journey To Data Science Feed">
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.ico/favicon-16x16.png">
+<link rel="mask-icon" href="/assets/logo.ico/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+
+    <!-- added below -->
+    
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Journey To Data Science
+          <span class="site-subtitle">Think Globally, Act Locally</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/about">About Me</a>
+            </li><li class="masthead__menu-item">
+              <a href="/statistics">Statistics</a>
+            </li><li class="masthead__menu-item">
+              <a href="/machinelearning">Machine Learning</a>
+            </li><li class="masthead__menu-item">
+              <a href="/deeplearning">Deep Learning</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">/</span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/categories/#deeplearning" itemprop="item"><span itemprop="name">Deeplearning</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">/</span>
+      
+    
+      
+      
+        <li class="current">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/black_professional.jpg" alt="James Chang" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">James Chang</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Data Scientist and AI researcher ❤️ Statistics, ML/DL, Decision Making</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Seoul, South Korea</span>
+        </li>
+      
+
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span></a></li>
+          
+        
+          
+            <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i><span class="label">Instagram</span></a></li>
+          
+        
+          
+            <li><a href="https://www.linkedin.com/in/changiusk/" rel="nofollow noopener noreferrer me" itemprop="sameAs"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">Linkedin</span></a></li>
+          
+        
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:changiusk@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="changiusk@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+
+  <article class="page h-entry" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="[USAD] UnSupervised Anomaly Detection on Multivariate Time Series">
+    <meta itemprop="description" content="USAD Paper Review &amp; Code Implementation">
+    <meta itemprop="datePublished" content="2022-10-03T00:00:00+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title p-name" itemprop="headline">
+            <a href="http://localhost:4000/deeplearning/usad" class="u-url" itemprop="url">[USAD] UnSupervised Anomaly Detection on Multivariate Time Series
+</a>
+          </h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content e-content" itemprop="text">
+        
+        <h3 id="introduction">Introduction</h3>
+
+<p>USAD 모델의 구조를 설명하기 앞서 Auto-encoder(AE)와 GAN 에서의 이상탐지의 장단점을 아는 것이 중요하다. 먼저 AE 기반의 이상탐지는 학습 단계와 탐지 단계로 구분할 수 있다. 학습 단계에서는 모델이 정상 데이터를 압축과 복원하는 과정을 거치면서 복원된 데이터와 원본 데이터 간의 차이(reconstruction error)를 최소화하도록 만들어지고, 탐지 단계에서는 비정상과 정상 데이터 모두 넣어 특정 threshold (aka anomaly score)을 넘기면 비정상, 넘기지 못하면 정상으로 이상여부를 판단한다. 하지만 AE는 압축하는 과정에서 불필요한 노이즈를 제거하기 때문에 비정상 데이터가 정상 데이터와 거의 비슷하다면 reconstruction error는 작아질 것이고, 비정상으로 감지되지 못할 것 이다.</p>
+
+<p>GAN 기반의 이상탐지 경우 입력데이터를 압축하고 복원하는 것은 Generator가 담당한다. 이때 Generator의 주된 목표는 Discriminator가 구분하지 못할 정도로 실제데이터와 유사한 데이터를 지속적으로 만드는 것이기 때문에 Generator에서의 Encoder와 Decoder는 비정상과 정상 데이터 정보를 모두 가지고 있다. 그리고 Discriminator는 Generator가 생성데이터가 비정상인지 정상인지 구별하는 역할을 한다. 하지만 GAN 모델도 완벽한 것은 아니다. GAN은 mode-collapse와 non-convergence를 단점으로 가지고 있어 불안정적인 면도 있다.</p>
+
+<p>이 문제를 해결하고 GAN과 AE 장점만으로 만든 이상 탐지 모델이 USAD이다.</p>
+
+<h3 id="architecture">Architecture</h3>
+<center><img src="../../images/2022-10-03-usad/architecture.png" style="zoom:50%" /></center>
+
+<p>USAD 는 Phase 1 (AE Training) 과 Phase 2 (Adversarial Training) 단계로 이뤄져있다. 첫 번째 단계에서는 각각의 AE를 원래의 입력으로 잘 복원되도록 학습하는 것이다.실제데이터 W는 인코더 E에 의해 Latent Space Z로 압축되고 각각의 디코더에 의해 복원된다. 이 부분에 해당되는 Loss Function은 다음과 같다.</p>
+
+\[L_{AE_{1}} = ||W - AE_{1}(W)||_2\]
+
+\[L_{AE_{2}} = ||W - AE_{2}(W)||_2\]
+
+<p>두 번째 단계에서는 $AE_{2}$가 실제 데이터와 $AE_{1}(W)$를 잘 구분할 수 있도록 학습한다. 반면 $AE_{1}$는 $AE_{2}$의 성능을 저하 시키도록 학습된다. 즉 $AE_{1}$(GAN의 Generator)는 W와 $AE_{2}$의 차이를 최소화 하는 것이고 $AE_{2}$ (GAN의 Discriminator)는 이 차이를 최대화 하는 것이다.</p>
+
+\[L_{AE_{1}} = +||W - AE_{2}(AE_{1}(W))||_2\]
+
+\[L_{AE_{2}} = -||W - AE_{2}(AE_{1}(W))||_2\]
+
+<p>최종 Loss Function은 아래와 같다.</p>
+
+<center><img src="../../images/2022-10-03-usad/loss.png" style="zoom:50%" /></center>
+
+<h3 id="usad-tensorflow-implementation">USAD Tensorflow Implementation</h3>
+
+<h4 id="데이터">데이터:</h4>
+<ul>
+  <li>https://drive.google.com/open?id=1rVJ5ry5GG-ZZi5yI4x9lICB8VhErXwCw</li>
+  <li>https://drive.google.com/open?id=1iDYc0OEmidN712fquOBRFjln90SbpaE7</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="s">"TF_CPP_MIN_LOG_LEVEL"</span><span class="p">]</span> <span class="o">=</span> <span class="s">"2"</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">Dense</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span><span class="p">,</span><span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
+
+<span class="n">CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">"Batch"</span><span class="p">:</span> <span class="mi">7919</span><span class="p">,</span>
+    <span class="s">"Window"</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="s">"Hidden"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s">"Epoch"</span><span class="p">:</span> <span class="mi">100</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Encoder</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_size</span><span class="p">,</span> <span class="n">latent_size</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Encoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">in_size</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">in_size</span><span class="p">,),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s">"relu"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">linear2</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">in_size</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">in_size</span><span class="o">/</span><span class="mi">2</span><span class="p">),),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s">"relu"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">linear3</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">latent_size</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">in_size</span><span class="o">/</span><span class="mi">4</span><span class="p">),),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s">"relu"</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">linear2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">linear3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+    
+<span class="k">class</span> <span class="nc">Decoder</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latent_size</span><span class="p">,</span> <span class="n">out_size</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Decoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">out_size</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">latent_size</span><span class="p">,),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s">"relu"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">linear2</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">out_size</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">out_size</span><span class="o">/</span><span class="mi">4</span><span class="p">),),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s">"relu"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">linear3</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="n">out_size</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">out_size</span><span class="o">/</span><span class="mi">2</span><span class="p">),),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s">'sigmoid'</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">linear2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">linear3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<span class="k">class</span> <span class="nc">USAD</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w_size</span><span class="p">,</span> <span class="n">z_size</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">USAD</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">(</span><span class="n">w_size</span><span class="p">,</span> <span class="n">z_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">decoder1</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">(</span><span class="n">z_size</span><span class="p">,</span> <span class="n">w_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">decoder2</span> <span class="o">=</span> <span class="n">Decoder</span><span class="p">(</span><span class="n">z_size</span><span class="p">,</span> <span class="n">w_size</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">epoch</span><span class="p">):</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">w1</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">decoder1</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">w2</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">decoder2</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">w3</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">decoder2</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">w1</span><span class="p">))</span>
+        <span class="n">loss1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">epoch</span><span class="o">*</span><span class="n">tf</span><span class="p">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">inputs</span><span class="o">-</span><span class="n">w1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">epoch</span><span class="p">)</span><span class="o">*</span><span class="n">tf</span><span class="p">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">inputs</span><span class="o">-</span><span class="n">w3</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">loss2</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">epoch</span><span class="o">*</span><span class="n">tf</span><span class="p">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">inputs</span><span class="o">-</span><span class="n">w2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">epoch</span><span class="p">)</span><span class="o">*</span><span class="n">tf</span><span class="p">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">inputs</span><span class="o">-</span><span class="n">w3</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss1</span><span class="p">,</span> <span class="n">loss2</span>
+
+
+<span class="k">def</span> <span class="nf">generate_dataset</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">window_size</span><span class="p">):</span>
+    <span class="n">normal</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"Manufacturing Dataset/test/SWaT_Dataset_Normal_v1.csv"</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="c1">#, nrows=1000)
+</span>    <span class="n">normal</span> <span class="o">=</span> <span class="n">normal</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="s">"Timestamp"</span> <span class="p">,</span> <span class="s">"Normal/Attack"</span> <span class="p">]</span> <span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Transform all columns into float64
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">normal</span><span class="p">):</span> 
+        <span class="n">normal</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">normal</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="n">replace</span><span class="p">(</span><span class="s">","</span> <span class="p">,</span> <span class="s">"."</span><span class="p">))</span>
+    <span class="n">normal</span> <span class="o">=</span> <span class="n">normal</span><span class="p">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    
+    <span class="n">min_max_scaler</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="p">.</span><span class="n">MinMaxScaler</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">normal</span><span class="p">.</span><span class="n">values</span>
+    <span class="n">x_scaled</span> <span class="o">=</span> <span class="n">min_max_scaler</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">normal</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">x_scaled</span><span class="p">)</span>
+
+    <span class="n">attack</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"Manufacturing Dataset/test/SWaT_Dataset_Attack_v0.csv"</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">";"</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="c1">#, nrows=1000)
+</span>    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">label</span><span class="o">!=</span> <span class="s">'Normal'</span> <span class="p">)</span> <span class="k">for</span> <span class="n">label</span>  <span class="ow">in</span> <span class="n">attack</span><span class="p">[</span><span class="s">"Normal/Attack"</span><span class="p">].</span><span class="n">values</span><span class="p">]</span>
+    <span class="n">attack</span> <span class="o">=</span> <span class="n">attack</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="s">"Timestamp"</span> <span class="p">,</span> <span class="s">"Normal/Attack"</span> <span class="p">]</span> <span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">attack</span><span class="p">):</span>
+        <span class="n">attack</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">attack</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="n">replace</span><span class="p">(</span><span class="s">","</span> <span class="p">,</span> <span class="s">"."</span><span class="p">))</span>
+    <span class="n">attack</span> <span class="o">=</span> <span class="n">attack</span><span class="p">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">attack</span><span class="p">.</span><span class="n">values</span>
+    <span class="n">x_scaled</span> <span class="o">=</span> <span class="n">min_max_scaler</span><span class="p">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">attack</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">x_scaled</span><span class="p">)</span>
+    
+    <span class="n">windows_normal</span><span class="o">=</span><span class="n">normal</span><span class="p">.</span><span class="n">values</span><span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="n">window_size</span><span class="p">)[</span><span class="bp">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="n">normal</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">window_size</span><span class="p">)[:,</span> <span class="bp">None</span><span class="p">]]</span>
+    <span class="n">windows_attack</span><span class="o">=</span><span class="n">attack</span><span class="p">.</span><span class="n">values</span><span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="n">window_size</span><span class="p">)[</span><span class="bp">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="n">attack</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">window_size</span><span class="p">)[:,</span> <span class="bp">None</span><span class="p">]]</span>
+
+    <span class="n">windows_normal_train</span> <span class="o">=</span> <span class="n">windows_normal</span><span class="p">[:</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">floor</span><span class="p">(.</span><span class="mi">8</span> <span class="o">*</span>  <span class="n">windows_normal</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))]</span>
+    <span class="n">windows_normal_val</span> <span class="o">=</span> <span class="n">windows_normal</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">floor</span><span class="p">(.</span><span class="mi">8</span> <span class="o">*</span>  <span class="n">windows_normal</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">floor</span><span class="p">(</span><span class="n">windows_normal</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))]</span>
+
+    <span class="k">return</span> <span class="n">windows_normal_train</span><span class="p">,</span> <span class="n">windows_normal_val</span><span class="p">,</span> <span class="n">windows_attack</span><span class="p">,</span> <span class="n">labels</span>
+
+<span class="n">windows_normal_train</span><span class="p">,</span> <span class="n">windows_normal_val</span><span class="p">,</span> <span class="n">windows_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">generate_dataset</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">"Batch"</span><span class="p">],</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s">"Window"</span><span class="p">])</span>
+
+<span class="n">w_size</span><span class="o">=</span><span class="n">windows_normal_train</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">windows_normal_train</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">z_size</span><span class="o">=</span><span class="n">windows_normal_train</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s">"Hidden"</span><span class="p">]</span>
+
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">Dataset</span><span class="p">.</span><span class="n">from_tensor_slices</span><span class="p">(</span>
+    <span class="n">windows_normal_train</span><span class="p">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">float32</span><span class="p">).</span><span class="n">reshape</span><span class="p">([</span><span class="n">windows_normal_train</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w_size</span><span class="p">])</span>
+<span class="p">).</span><span class="n">batch</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">"Batch"</span><span class="p">],</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">val_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">Dataset</span><span class="p">.</span><span class="n">from_tensor_slices</span><span class="p">(</span>
+    <span class="n">windows_normal_val</span><span class="p">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">float32</span><span class="p">).</span><span class="n">reshape</span><span class="p">([</span><span class="n">windows_normal_val</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w_size</span><span class="p">])</span>
+<span class="p">).</span><span class="n">batch</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">"Batch"</span><span class="p">],</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">test_dataset</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">Dataset</span><span class="p">.</span><span class="n">from_tensor_slices</span><span class="p">(</span>
+    <span class="n">windows_test</span><span class="p">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">float32</span><span class="p">).</span><span class="n">reshape</span><span class="p">([</span><span class="n">windows_test</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w_size</span><span class="p">])</span>
+<span class="p">).</span><span class="n">batch</span><span class="p">(</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">"Batch"</span><span class="p">],</span> <span class="n">drop_remainder</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">windows_labels</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span> <span class="o">-</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s">"Window"</span><span class="p">]):</span>
+    <span class="n">windows_labels</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">int_</span><span class="p">(</span><span class="n">y_test</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">CONFIG</span><span class="p">[</span><span class="s">"Window"</span><span class="p">]])))</span>
+<span class="n">y_test</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nb">sum</span><span class="p">(</span><span class="n">window</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">window</span> <span class="ow">in</span> <span class="n">windows_labels</span> <span class="p">]</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">USAD</span><span class="p">(</span><span class="n">w_size</span><span class="p">,</span> <span class="n">z_size</span><span class="p">)</span>
+<span class="n">optimizer1</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">optimizers</span><span class="p">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span>
+<span class="n">optimizer2</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">optimizers</span><span class="p">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s">"Epoch"</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">):</span>            
+            <span class="k">with</span> <span class="n">tf</span><span class="p">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape1</span><span class="p">,</span> <span class="n">tf</span><span class="p">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape2</span><span class="p">:</span>
+                <span class="n">loss1</span><span class="p">,</span><span class="n">loss2</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">training</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+                <span class="n">grads1</span> <span class="o">=</span> <span class="n">tape1</span><span class="p">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss1</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="n">encoder</span><span class="p">.</span><span class="n">trainable_variables</span> <span class="o">+</span> <span class="n">model</span><span class="p">.</span><span class="n">decoder1</span><span class="p">.</span><span class="n">trainable_variables</span><span class="p">)</span>
+                <span class="n">grads2</span> <span class="o">=</span> <span class="n">tape2</span><span class="p">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss2</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="n">encoder</span><span class="p">.</span><span class="n">trainable_variables</span> <span class="o">+</span> <span class="n">model</span><span class="p">.</span><span class="n">decoder2</span><span class="p">.</span><span class="n">trainable_variables</span><span class="p">)</span>
+                <span class="n">optimizer1</span><span class="p">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads1</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="n">encoder</span><span class="p">.</span><span class="n">trainable_variables</span> <span class="o">+</span> <span class="n">model</span><span class="p">.</span><span class="n">decoder1</span><span class="p">.</span><span class="n">trainable_variables</span><span class="p">))</span>
+                <span class="n">optimizer2</span><span class="p">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads2</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="n">encoder</span><span class="p">.</span><span class="n">trainable_variables</span> <span class="o">+</span> <span class="n">model</span><span class="p">.</span><span class="n">decoder2</span><span class="p">.</span><span class="n">trainable_variables</span><span class="p">))</span>
+                
+    <span class="n">loss1_l</span><span class="p">,</span> <span class="n">loss2_l</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">val_dataset</span><span class="p">):</span>
+        <span class="n">loss1</span><span class="p">,</span> <span class="n">loss2</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">training</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="n">loss1_l</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss1</span><span class="p">)</span>
+        <span class="n">loss2_l</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss2</span><span class="p">)</span>
+    <span class="n">loss1_avg</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">loss1_l</span><span class="p">)</span>
+    <span class="n">loss2_avg</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">loss2_l</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Epoch [%d]"</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s">'val_loss1:'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">loss1_avg</span><span class="p">.</span><span class="n">numpy</span><span class="p">())</span> <span class="o">+</span> <span class="s">', val_loss2:'</span><span class="p">,</span> <span class="n">loss2_avg</span><span class="p">.</span><span class="n">numpy</span><span class="p">())</span>
+
+</code></pre></div></div>
+
+<h3 id="reference">Reference:</h3>
+<ul>
+  <li>https://github.com/manigalati/usad</li>
+  <li>https://dl.acm.org/doi/10.1145/3394486.3403392</li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#anomaly-detection" class="page__taxonomy-item p-category" rel="tag">Anomaly Detection</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#deep-learning" class="page__taxonomy-item p-category" rel="tag">Deep Learning</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2022-10-03T00:00:00+09:00">October 3, 2022</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/deeplearning/fasterrcnn" class="pagination--pager" title="[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+">Previous</a>
+    
+    
+      <a href="/deeplearning/yolov3" class="pagination--pager" title="[YOLOv3] An Incremental Improvement
+">Next</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      <h2 class="page__related-title">You may also enjoy</h2>
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/stablediffusion" rel="permalink">[Stable Diffusion] High-Resolution Image Synthesis with Latent Diffusion Models
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Stable Diffusion Paper Explanation &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/yolov3" rel="permalink">[YOLOv3] An Incremental Improvement
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">YOLOv3 Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/fasterrcnn" rel="permalink">[Faster R-CNN] Towards Real-Time Object Detection with Region Proposal Networks
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">Faster R-CNN Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+          
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/deeplearning/unet" rel="permalink">[U-Net] Convolutional Networks for Biomedical Image Segmentation
+</a>
+      
+    </h2>
+    
+
+
+    <p class="archive__item-excerpt" itemprop="description">U-Net Paper Review &amp; Code Implementation
+</p>
+  </article>
+</div>
+
+        
+      </div>
+    </div>
+  
+  
+</div>
+
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="Enter your search term..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>Follow:</strong></li>
+    
+
+    
+      
+        
+      
+        
+      
+        
+          <li><a href="https://github.com/changiusk" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+        
+      
+        
+      
+        
+          <li><a href="https://www.instagram.com/james.j__chang/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2023 James Chang. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/assets/js/lunr/lunr.min.js"></script>
+<script src="/assets/js/lunr/lunr-store.js"></script>
+<script src="/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+
+
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+
+  </body>
+</html>
